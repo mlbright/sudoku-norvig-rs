@@ -4,9 +4,13 @@ static DIGITS: &str = "12345679";
 static ROWS: &str = "ABCDEFGHI";
 
 fn main() {
-    println!("Hello, world!");
+    println!("{:?}",cross(ROWS,DIGITS));
+}
 
-    for (i, j) in iproduct!(ROWS.chars(), DIGITS.chars()) {
-        println!("{}{}", i, j);
+fn cross(a:&str,b:&str) -> Vec::<String> {
+    let mut cp = Vec::<String>::new();
+    for (i, j) in iproduct!(a.chars(), b.chars()) {
+        cp.push(format!("{}{}", i, j));
     }
+    cp
 }
