@@ -1,6 +1,10 @@
 use itertools::iproduct;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::path::Path;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::BufReader;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";
@@ -79,6 +83,29 @@ fn main() {
             Some(plist) => assert_eq!(plist.len(), 20),
         }
     }
+
+    let grid1  = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
+    let grid2  = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
+    let hard1  = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
+
+    solve(grid1);
+}
+
+fn parse_grid(grid: &str) -> Option<HashMap<String,String>> {
+    puzzle = grid_values(grid);
+    let solution: HashMap<String,String> = HashMap::new();
+
+}
+
+fn solve(grid: &str) -> Option<HashMap<String,String>> {
+    match parse_grid(grid) {
+        None => None,
+        Some(puzzle) => search(puzzle),
+    }
+}
+
+fn search(puzzle: HashMap<String,String>) -> Option<HashMap<String,String>> {
+    Some(puzzle)
 }
 
 fn cross(a: &str, b: &str) -> Vec<String> {
@@ -87,4 +114,10 @@ fn cross(a: &str, b: &str) -> Vec<String> {
         cp.push(format!("{}{}", i, j));
     }
     cp
+}
+
+fn from_file(filename: impl AsRef<Path>) -> Vec<String> {
+    let file = File::open(filename).expect("no such file");
+    let buf = BufReader::new(file);
+    buf.lines().map(|l| l.expect("Could not parse line")).collect()
 }
