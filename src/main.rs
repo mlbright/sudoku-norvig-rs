@@ -105,15 +105,36 @@ fn main() {
     test();
 
     let grid1 = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
-    let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
-    let hard1 = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
+    let _grid2 =
+        "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
+    let _hard1 =
+        ".....6....59.....82....8....45........3........6..3.54...325..6..................";
 
     solve(grid1);
 }
 
 fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
-    let solution: HashMap<String, String> = HashMap::new();
+    let mut solution: HashMap<String, String> = HashMap::new();
+    for s in SQUARES.iter() {
+        solution.insert(s.clone(), DIGITS.to_string());
+    }
     Some(solution)
+}
+
+fn grid_values(grid: &str) -> HashMap<String, String> {
+    let mut valid = DIGITS.to_string();
+    valid.push_str(&'.'.to_string());
+    println!("{}", valid);
+    let mut puzzle: HashMap<String, String> = HashMap::new();
+    let i = 0;
+    for c in grid.chars() {
+        let value = c.to_string();
+        if valid.contains(&value) {
+            puzzle.insert(SQUARES[i].clone(), value);
+        }
+    }
+    assert_eq!(puzzle.len(),81);
+    puzzle
 }
 
 fn solve(grid: &str) -> Option<HashMap<String, String>> {
