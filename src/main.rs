@@ -110,7 +110,14 @@ fn main() {
     let _hard1 =
         ".....6....59.....82....8....45........3........6..3.54...325..6..................";
 
-    solve(&grid1);
+    if let Some(solution) = solve(&grid1) {
+        println!("{:?}", solution);
+        let mut show: String = "".to_string();
+        for sq in SQUARES.iter() {
+            show.push_str(solution.get(sq).expect("missing square?"));
+        }
+        println!("{}", show);
+    };
 }
 
 fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
