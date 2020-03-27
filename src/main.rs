@@ -110,13 +110,22 @@ fn main() {
     let _hard1 =
         ".....6....59.....82....8....45........3........6..3.54...325..6..................";
 
-    solve(grid1);
+    solve(&grid1);
 }
 
 fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
+    // To start, every square can be any digit; then assign values from the grid.
     let mut solution: HashMap<String, String> = HashMap::new();
     for s in SQUARES.iter() {
         solution.insert(s.clone(), DIGITS.to_string());
+    }
+    let puzzle = grid_values(grid);
+    for (square, value) in &puzzle {
+        if DIGITS.contains(value) {
+            if !assign(&mut solution, square.clone(), value.clone()) {
+                return None;
+            }
+        }
     }
     Some(solution)
 }
@@ -124,17 +133,82 @@ fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
 fn grid_values(grid: &str) -> HashMap<String, String> {
     let mut valid = DIGITS.to_string();
     valid.push_str(&'.'.to_string());
-    println!("{}", valid);
+    valid.push_str(&'0'.to_string());
     let mut puzzle: HashMap<String, String> = HashMap::new();
-    let i = 0;
+    let mut i = 0;
     for c in grid.chars() {
         let value = c.to_string();
         if valid.contains(&value) {
             puzzle.insert(SQUARES[i].clone(), value);
+            i = i + 1;
         }
     }
-    assert_eq!(puzzle.len(),81);
+    assert_eq!(puzzle.len(), 81);
     puzzle
+}
+
+fn assign(puzzle: &mut HashMap<String, String>, square: String, value: String) -> bool {
+    let mut other_values = puzzle.get(&square).expect("value doesn't exist").clone();
+    other_values = other_values.replace(&value, "");
+    for v in other_values.chars() {
+        if !eliminate(puzzle, square.clone(), v.to_string()) {
+            return false;
+        }
+    }
+    true
+}
+
+fn eliminate(puzzle: &mut HashMap<String, String>, square: String, value: String) -> bool {
+    let mut value_at_square = puzzle.get(&square).expect("square doesn't exist?").clone();
+
+    if !value_at_square.contains(&value) {
+        return true; // Already eliminated
+    }
+
+    value_at_square = value_at_square.replace(&value, "");
+    puzzle.insert(square.clone(), value_at_square.clone());
+
+    if value_at_square.len() == 0 {
+        return false; // Contradiction, removed the last digit
+    }
+
+    // (1) If a square s is reduced to one value, then eliminate it from its peers.
+    if value_at_square.len() == 1 {
+        for peer in PEERS
+            .get(&square)
+            .expect("square doesn't have peers?!")
+            .iter()
+        {
+            if !eliminate(puzzle, peer.clone(), value_at_square.clone()) {
+                return false;
+            }
+        }
+    }
+
+    // (2) If a unit u is reduced to only one place for a value d, then put it there.
+    let units = UNITS.get(&square).expect("no units for square ?!");
+    for unit in units.iter() {
+        let mut spots: Vec<String> = vec![];
+        for sq in unit.iter() {
+            if puzzle
+                .get(sq)
+                .expect("square doesn't exist?")
+                .contains(&value)
+            {
+                spots.push(sq.clone());
+            }
+        }
+        if spots.len() == 0 {
+            return false; // Contradiction
+        }
+
+        if spots.len() == 1 {
+            if !assign(puzzle, spots[0].clone(), value.clone()) {
+                return false;
+            }
+        }
+    }
+    true
 }
 
 fn solve(grid: &str) -> Option<HashMap<String, String>> {
