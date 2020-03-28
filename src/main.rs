@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::Path;
+use std::time::Instant;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";
@@ -104,16 +105,17 @@ fn test() {
 fn main() {
     test();
 
+    /*
     let grid1 = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
-    let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
-
     if let Some(solution) = solve(&grid1) {
         display(&solution);
     };
 
+    let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
     if let Some(solution) = solve(&grid2) {
         display(&solution);
     };
+    */
 
     // super hard or impossible?
     // let hard1 = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
@@ -121,6 +123,10 @@ fn main() {
     // if let Some(solution) = solve(&hard1) {
     //    display(&solution);
     // };
+
+    solve_all(&from_file("easy50.txt"), "easy");
+    solve_all(&from_file("top95.txt"), "hard");
+    solve_all(&from_file("hardest.txt"), "hardest");
 }
 
 fn display(solution: &HashMap<String, String>) {
@@ -283,3 +289,58 @@ fn from_file(filename: impl AsRef<Path>) -> Vec<String> {
         .map(|l| l.expect("Could not parse line"))
         .collect()
 }
+
+fn solve_all(grids: &Vec<String>, name: &str) {
+    let mut times: Vec<std::time::Duration> = vec![];
+
+    for grid in grids.iter() {
+        if let Some(t) = time_solve(grid) {
+            times.push(t);
+        }
+    }
+
+    let n = grids.len();
+    /*
+    println!(
+        "Solved {} of {} {} puzzles (avg. {:.4} secs ({:.2} Hz), max {:.4} secs).",
+        times.len(),
+        n,
+        name,
+        ,
+        ,
+        max(&times),
+    );
+    */
+    println!("Solved {} of {} {} puzzles", times.len(), n, name);
+}
+
+fn time_solve(grid: &str) -> Option<std::time::Duration> {
+    let start = Instant::now();
+    if let Some(_) = solve(grid) {
+        let duration = start.elapsed();
+        return Some(duration);
+    }
+    None
+}
+
+/*
+fn max(durations: &Vec<std::time::Duration>) -> std::time::Duration {
+    let mut max = Duration::new(0, 0);
+    for duration in durations.iter() {
+        if duration > &max {
+            max = *duration;
+        }
+    }
+    return max;
+}
+
+fn avg(durations: &Vec<std::time::Duration>) -> std::time::Duration {
+    let mut sum = Duration::new(0, 0);
+    for duration in durations.iter() {
+        sum = sum + *duration;
+    }
+
+    let n = durations.len() as f32;
+    return sum /
+}
+*/
