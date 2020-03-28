@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::Path;
+use std::time::Duration;
 use std::time::Instant;
 
 static DIGITS: &str = "123456789";
@@ -300,18 +301,16 @@ fn solve_all(grids: &Vec<String>, name: &str) {
     }
 
     let n = grids.len();
-    /*
+    let s = sum(&times);
     println!(
         "Solved {} of {} {} puzzles (avg. {:.4} secs ({:.2} Hz), max {:.4} secs).",
         times.len(),
         n,
         name,
-        ,
-        ,
-        max(&times),
+        s.as_secs_f64() / n as f64,
+        n as f64 / s.as_secs_f64(),
+        max(&times).as_secs_f64(),
     );
-    */
-    println!("Solved {} of {} {} puzzles", times.len(), n, name);
 }
 
 fn time_solve(grid: &str) -> Option<std::time::Duration> {
@@ -323,7 +322,6 @@ fn time_solve(grid: &str) -> Option<std::time::Duration> {
     None
 }
 
-/*
 fn max(durations: &Vec<std::time::Duration>) -> std::time::Duration {
     let mut max = Duration::new(0, 0);
     for duration in durations.iter() {
@@ -334,13 +332,11 @@ fn max(durations: &Vec<std::time::Duration>) -> std::time::Duration {
     return max;
 }
 
-fn avg(durations: &Vec<std::time::Duration>) -> std::time::Duration {
+fn sum(durations: &Vec<std::time::Duration>) -> std::time::Duration {
     let mut sum = Duration::new(0, 0);
     for duration in durations.iter() {
+        // println!("{}", duration.as_secs_f64());
         sum = sum + *duration;
     }
-
-    let n = durations.len() as f32;
-    return sum /
+    return sum;
 }
-*/
