@@ -106,17 +106,23 @@ fn main() {
 
     let grid1 = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
     let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
-    let hard1 = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
+    // let hard1 = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
 
     if let Some(solution) = solve(&grid1) {
         display(&solution);
     };
+
+    println!("");
+
     if let Some(solution) = solve(&grid2) {
         display(&solution);
     };
+
+    /*
     if let Some(solution) = solve(&hard1) {
         display(&solution);
     };
+    */
 }
 
 fn display(solution: &HashMap<String, String>) {
@@ -235,7 +241,7 @@ fn solve(grid: &str) -> Option<HashMap<String, String>> {
 fn search(puzzle: Option<HashMap<String, String>>) -> Option<HashMap<String, String>> {
     match puzzle {
         None => None,
-        Some(mut solution) => {
+        Some(solution) => {
             let mut min_square = "A1";
             let mut min_size = 9;
             let mut is_solved = true;
@@ -250,18 +256,22 @@ fn search(puzzle: Option<HashMap<String, String>>) -> Option<HashMap<String, Str
             }
 
             if is_solved {
+                println!("solved");
                 return Some(solution);
             }
 
-            let possible_values: Vec<char> = solution
+            for d in solution
                 .get(min_square.clone())
                 .expect("missing square?!")
                 .chars()
-                .collect();
-
-            for d in possible_values.iter() {
-                if assign(&mut solution, min_square.to_string(), d.to_string()) {
-                    return Some(solution);
+            {
+                println!("testing!");
+                let mut solution_copy = solution.clone();
+                if assign(&mut solution_copy, min_square.to_string(), d.to_string()) {
+                    match search(Some(solution_copy)) {
+                        None => (),
+                        Some(result) => return Some(result),
+                    }
                 }
             }
             None
