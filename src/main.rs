@@ -128,6 +128,11 @@ fn main() {
     solve_all(&from_file("easy50.txt"), "easy");
     solve_all(&from_file("top95.txt"), "hard");
     solve_all(&from_file("hardest.txt"), "hardest");
+
+    let grid3 = "6..1.7..4..5.4.....27.6.....3...5.7..9..3...2...2...3......6..5....51..62..4..8..";
+    if let Some(solution) = solve(&grid3) {
+        display(&solution);
+    };
 }
 
 fn display(solution: &HashMap<String, String>) {
