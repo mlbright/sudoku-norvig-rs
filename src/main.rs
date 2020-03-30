@@ -220,11 +220,12 @@ fn eliminate(puzzle: &mut HashMap<String, String>, square: &String, value: &Stri
     }
 
     let reduced_possibilities = values_at_square.replace(value, "");
-    puzzle.insert(square.clone(), reduced_possibilities.clone());
 
     if reduced_possibilities.len() == 0 {
         return false; // Contradiction, removed the last digit
     }
+
+    puzzle.insert(square.clone(), reduced_possibilities.clone());
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
     if reduced_possibilities.len() == 1 {
