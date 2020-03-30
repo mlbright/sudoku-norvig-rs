@@ -100,6 +100,8 @@ fn test() {
         }
     }
 
+    // TODO: need assertions for units["C2"] and peers["C2"]
+    //
     // println!("{:?}", UNITS.get("C2").unwrap());
 
     // let mut test = PEERS.get("C2").unwrap().clone();
@@ -110,30 +112,15 @@ fn test() {
 fn main() {
     test();
 
-    /*
-    let grid1 = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
-    if let Some(solution) = solve(&grid1) {
-        display(&solution);
-    };
-
-    let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
-    if let Some(solution) = solve(&grid2) {
-        display(&solution);
-    };
-    */
-
-    /*
-    let grid3 = "6..1.7..4..5.4.....27.6.....3...5.7..9..3...2...2...3......6..5....51..62..4..8..";
-    if let Some(solution) = solve(&grid3) {
-        display(&solution);
-    };
-    */
-
+    // let grid1 = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
+    // let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
+    // let grid3 = "6..1.7..4..5.4.....27.6.....3...5.7..9..3...2...2...3......6..5....51..62..4..8..";
+    //
     // super hard or impossible?
-    // let hard1 = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
-
-    // if let Some(solution) = solve(&hard1) {
-    //    display(&solution);
+    // let impossible = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
+    //
+    // if let Some(solution) = solve(&grid1) {
+    //     format_grid(&solution);
     // };
 
     solve_all(&from_file("easy50.txt"), "easy");
@@ -151,7 +138,6 @@ fn main() {
 fn format_grid(solution: &HashMap<String, String>) -> String {
     let mut show: String = "".to_string();
     for sq in SQUARES.iter() {
-        // show.push_str(solution.get(sq).expect("missing square?"));
         let v = solution.get(sq).unwrap();
         if v.len() == 1 {
             show.push_str(v);
@@ -358,7 +344,6 @@ fn max(durations: &Vec<std::time::Duration>) -> std::time::Duration {
 fn sum(durations: &Vec<std::time::Duration>) -> std::time::Duration {
     let mut sum = Duration::new(0, 0);
     for duration in durations.iter() {
-        // println!("{}", duration.as_secs_f64());
         sum = sum + *duration;
     }
     return sum;
