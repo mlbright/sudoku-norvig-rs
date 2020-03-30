@@ -1,7 +1,10 @@
 #[macro_use]
 extern crate lazy_static;
+extern crate rand;
 
 use itertools::iproduct;
+use rand::seq::SliceRandom;
+use rand::Rng;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fs::File;
@@ -13,6 +16,7 @@ use std::time::Instant;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";
+static PUZZLE_N: usize = 17;
 
 lazy_static! {
     static ref SQUARES: Vec<String> = cross(ROWS, DIGITS);
@@ -135,14 +139,27 @@ fn main() {
     solve_all(&from_file("easy50.txt"), "easy");
     solve_all(&from_file("top95.txt"), "hard");
     solve_all(&from_file("hardest.txt"), "hardest");
+
+    let mut random_puzzles: Vec<String> = vec![];
+    for _ in 0..100 {
+        random_puzzles.push(random_puzzle());
+    }
+
+    solve_all(&random_puzzles, "random");
 }
 
-fn display(solution: &HashMap<String, String>) {
+fn format_grid(solution: &HashMap<String, String>) -> String {
     let mut show: String = "".to_string();
     for sq in SQUARES.iter() {
-        show.push_str(solution.get(sq).expect("missing square?"));
+        // show.push_str(solution.get(sq).expect("missing square?"));
+        let v = solution.get(sq).unwrap();
+        if v.len() == 1 {
+            show.push_str(v);
+        } else {
+            show.push('.');
+        }
     }
-    println!("{}", show);
+    show
 }
 
 fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
@@ -346,11 +363,46 @@ fn sum(durations: &Vec<std::time::Duration>) -> std::time::Duration {
     return sum;
 }
 
-fn random_puzzle() {
+fn random_puzzle() -> String {
+    let mut rng = rand::thread_rng();
     let mut puzzle: HashMap<String, String> = HashMap::new();
     for square in SQUARES.iter() {
         puzzle
             .entry(square.to_string())
             .or_insert(DIGITS.to_string());
     }
+
+    let mut random_squares = SQUARES.clone();
+    random_squares.shuffle(&mut rng);
+
+    for random_square in random_squares.iter() {
+        let square_possibilities = puzzle.get(random_square).unwrap().clone();
+        let i = rng.gen_range(0, square_possibilities.len());
+
+        if !assign(
+            &mut puzzle,
+            &random_square,
+            &square_possibilities.chars().nth(i).unwrap().to_string(),
+        ) {
+            break;
+        }
+
+        let mut successfully_assigned: String = String::from("");
+        for square in SQUARES.iter() {
+            let values_at_square = puzzle.get(square).unwrap();
+            if values_at_square.len() == 1 {
+                successfully_assigned.push_str(values_at_square);
+            }
+        }
+
+        let mut chars: Vec<char> = successfully_assigned.chars().collect();
+        chars.dedup();
+        let deduped: String = chars.iter().collect();
+
+        if successfully_assigned.len() >= PUZZLE_N && deduped.len() >= 8 {
+            return format_grid(&puzzle);
+        }
+    }
+
+    return random_puzzle();
 }
