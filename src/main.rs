@@ -167,16 +167,13 @@ fn grid_values(grid: &str) -> HashMap<String, String> {
 }
 
 fn assign(puzzle: &mut HashMap<String, String>, square: &String, value: &String) -> bool {
-    let other_values: Vec<String> = puzzle
-        .get(square)
-        .unwrap()
-        .chars()
-        .filter(|x| x.to_string() != *value)
-        .map(|x| x.to_string())
-        .collect();
-    for other_value in other_values.iter() {
-        if !eliminate(puzzle, square, other_value) {
-            return false;
+    let other_values = puzzle.get(square).unwrap().clone();
+    for other_value in other_values.chars() {
+        let s = other_value.to_string();
+        if s != *value {
+            if !eliminate(puzzle, square, &s) {
+                return false;
+            }
         }
     }
     true
