@@ -14,7 +14,6 @@ use std::time::Duration;
 use std::time::Instant;
 
 static DIGITS: &str = "123456789";
-static VALID: &str = ".0123456789";
 static ROWS: &str = "ABCDEFGHI";
 static PUZZLE_N: usize = 17;
 
@@ -144,8 +143,7 @@ fn parse_grid(grid: &str) -> Option<Vec<String>> {
     for _ in 0..SQUARES.len() {
         solution.push(DIGITS.to_string());
     }
-    let puzzle = grid_values(grid);
-    for (i, value) in puzzle.iter().enumerate() {
+    for (i, value) in grid.chars().enumerate() {
         if DIGITS.contains(value) {
             if !assign(&mut solution, i, value) {
                 return None;
@@ -155,24 +153,11 @@ fn parse_grid(grid: &str) -> Option<Vec<String>> {
     Some(solution)
 }
 
-fn grid_values(grid: &str) -> Vec<String> {
-    let mut puzzle: Vec<String> = Vec::with_capacity(81);
-    for c in grid.chars() {
-        let value = c.to_string();
-        if VALID.contains(&value) {
-            puzzle.push(value);
-        }
-    }
-    assert_eq!(puzzle.len(), 81);
-    puzzle
-}
-
-fn assign(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
+fn assign(puzzle: &mut Vec<String>, square: usize, value_to_assign: char) -> bool {
     let other_values = puzzle[square].clone();
     for other_value in other_values.chars() {
-        let s = other_value.to_string();
-        if s != *value {
-            if !eliminate(puzzle, square, &s) {
+        if value_to_assign != other_value {
+            if !eliminate(puzzle, square, other_value) {
                 return false;
             }
         }
@@ -180,25 +165,21 @@ fn assign(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
     true
 }
 
-fn eliminate(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
-    let values_at_square = puzzle[square].clone();
-
-    if !values_at_square.contains(value) {
-        return true; // Already eliminated
+fn eliminate(puzzle: &mut Vec<String>, square: usize, value_to_eliminate: char) -> bool {
+    if !puzzle[square].contains(value_to_eliminate) {
+        return true;
     }
 
-    let reduced_possibilities = values_at_square.replace(value, "");
+    puzzle[square].retain(|c| c != value_to_eliminate);
 
-    if reduced_possibilities.len() == 0 {
+    if puzzle[square].len() == 0 {
         return false; // Contradiction, removed the last digit
     }
-
-    puzzle[square] = reduced_possibilities.clone();
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
     if puzzle[square].len() == 1 {
         for peer in PEERS[square].iter() {
-            if !eliminate(puzzle, *peer, &reduced_possibilities) {
+            if !eliminate(puzzle, *peer, puzzle[square].chars().nth(0).unwrap()) {
                 return false;
             }
         }
@@ -208,7 +189,7 @@ fn eliminate(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
     for unit in UNITS[square].iter() {
         let mut spots: Vec<usize> = vec![];
         for sq in unit {
-            if puzzle[*sq].contains(value) {
+            if puzzle[*sq].contains(value_to_eliminate) {
                 spots.push(*sq);
             }
         }
@@ -218,7 +199,7 @@ fn eliminate(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
         }
 
         if spots.len() == 1 {
-            if !assign(puzzle, spots[0], &value) {
+            if !assign(puzzle, spots[0], value_to_eliminate) {
                 return false;
             }
         }
@@ -252,9 +233,9 @@ fn search(p: Option<Vec<String>>) -> Option<Vec<String>> {
                 return Some(puzzle);
             }
 
-            for other_values in puzzle[min_square].chars() {
+            for other_value in puzzle[min_square].chars() {
                 let mut puzzle_copy = puzzle.clone();
-                if assign(&mut puzzle_copy, min_square, &other_values.to_string()) {
+                if assign(&mut puzzle_copy, min_square, other_value) {
                     if let Some(result) = search(Some(puzzle_copy)) {
                         return Some(result);
                     }
@@ -339,7 +320,7 @@ fn random_puzzle() -> String {
         if !assign(
             &mut puzzle,
             *random_index,
-            &square_possibilities.chars().nth(i).unwrap().to_string(),
+            square_possibilities.chars().nth(i).unwrap(),
         ) {
             break;
         }
