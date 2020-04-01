@@ -21,6 +21,13 @@ static PUZZLE_N: usize = 17;
 
 lazy_static! {
     static ref SQUARES: Vec<String> = cross(ROWS, DIGITS);
+    static ref ISQUARES: HashMap<String, usize> = {
+        let mut isquares: HashMap<String, usize> = HashMap::new();
+        for (i, sq) in SQUARES.iter().enumerate() {
+            isquares.insert(sq.clone(), i);
+        }
+        isquares
+    };
     static ref UNITLIST: Vec<Vec<String>> = {
         let mut unitlist: Vec<Vec<String>> = vec![];
 
@@ -43,6 +50,18 @@ lazy_static! {
 
         unitlist
     };
+    static ref IUNITLIST: std::vec::Vec<Vec<usize>> = {
+        let mut unitlist: Vec<Vec<usize>> = vec![];
+        for unit in UNITLIST.iter() {
+            let mut u: Vec<usize> = vec![];
+            for sq in unit.iter() {
+                let d = ISQUARES.get(sq).unwrap();
+                u.push(*d);
+            }
+            unitlist.push(u);
+        }
+        unitlist
+    };
     static ref UNITS: HashMap<String, Vec<Vec<String>>> = {
         let mut units: HashMap<String, Vec<Vec<String>>> = HashMap::new();
 
@@ -57,6 +76,23 @@ lazy_static! {
                 }
             }
             units.insert(s.clone(), group);
+        }
+
+        units
+    };
+    static ref IUNITS: Vec<Vec<Vec<usize>>> = {
+        let mut units: Vec<Vec<Vec<usize>>> = Vec::with_capacity(81);
+        for (i, _) in SQUARES.iter().enumerate() {
+            let mut group: Vec<Vec<usize>> = vec![];
+            for unit in IUNITLIST.iter() {
+                for j in unit.iter() {
+                    if i == *j {
+                        group.push(unit.clone());
+                        break;
+                    }
+                }
+            }
+            units.push(group);
         }
 
         units
@@ -81,17 +117,40 @@ lazy_static! {
         }
         peers
     };
+    static ref IPEERS: Vec<Vec<usize>> = {
+        let mut peers: Vec<Vec<usize>> = Vec::with_capacity(20);
+        for (i, _) in SQUARES.iter().enumerate() {
+            let mut peer_set: Vec<usize> = vec![];
+            for unit in IUNITS[i].iter() {
+                for square in unit.iter() {
+                    if *square != i {
+                        peer_set.push(*square);
+                    }
+                }
+            }
+            peer_set.sort();
+            peer_set.dedup();
+            peers.push(peer_set);
+        }
+        peers
+    };
 }
 
 fn test() {
     assert_eq!(SQUARES.len(), 81);
+    assert_eq!(ISQUARES.len(), 81);
     assert_eq!(UNITLIST.len(), 27);
+    assert_eq!(IUNITLIST.len(), 27);
 
     for s in SQUARES.iter() {
         match UNITS.get(s) {
             None => panic!("No units for {}", s),
             Some(ulist) => assert_eq!(ulist.len(), 3),
         }
+    }
+
+    for (i, _) in SQUARES.iter().enumerate() {
+        assert_eq!(IUNITS[i].len(), 3);
     }
 
     for s in SQUARES.iter() {
@@ -101,11 +160,18 @@ fn test() {
         }
     }
 
+    for (i, _) in SQUARES.iter().enumerate() {
+        assert_eq!(IPEERS[i].len(), 20);
+    }
+
     // TODO: need assertions for units["C2"] and peers["C2"]
     // println!("{:?}", UNITS.get("C2").unwrap());
     // let mut test = PEERS.get("C2").unwrap().clone();
     // test.sort();
     // println!("{:?}", test);
+
+    println!("{:?}", IUNITS[19]);
+    println!("{:?}", IPEERS[19]);
 }
 
 fn main() {
