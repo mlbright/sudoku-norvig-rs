@@ -6,7 +6,6 @@ use itertools::iproduct;
 use rand::seq::SliceRandom;
 use rand::Rng;
 use std::collections::HashMap;
-use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -62,24 +61,6 @@ lazy_static! {
         }
         unitlist
     };
-    static ref UNITS: HashMap<String, Vec<Vec<String>>> = {
-        let mut units: HashMap<String, Vec<Vec<String>>> = HashMap::new();
-
-        for s in SQUARES.iter() {
-            let mut group: Vec<Vec<String>> = Vec::new();
-            for unit in UNITLIST.iter() {
-                for square in unit.iter() {
-                    if square == s {
-                        group.push(unit.clone());
-                        break;
-                    }
-                }
-            }
-            units.insert(s.clone(), group);
-        }
-
-        units
-    };
     static ref IUNITS: Vec<Vec<Vec<usize>>> = {
         let mut units: Vec<Vec<Vec<usize>>> = Vec::with_capacity(81);
         for (i, _) in SQUARES.iter().enumerate() {
@@ -96,26 +77,6 @@ lazy_static! {
         }
 
         units
-    };
-    static ref PEERS: HashMap<String, Vec<String>> = {
-        let mut peers: HashMap<String, Vec<String>> = HashMap::new();
-
-        for s in SQUARES.iter() {
-            let mut peer_set: HashSet<String> = HashSet::new();
-            for unit in UNITS.get(s).unwrap() {
-                for square in unit.iter() {
-                    if square != s {
-                        peer_set.insert(square.clone());
-                    }
-                }
-            }
-            let mut peer_list: Vec<String> = Vec::new();
-            for peer in &peer_set {
-                peer_list.push(peer.clone());
-            }
-            peers.insert(s.clone(), peer_list);
-        }
-        peers
     };
     static ref IPEERS: Vec<Vec<usize>> = {
         let mut peers: Vec<Vec<usize>> = Vec::with_capacity(20);
@@ -142,22 +103,8 @@ fn test() {
     assert_eq!(UNITLIST.len(), 27);
     assert_eq!(IUNITLIST.len(), 27);
 
-    for s in SQUARES.iter() {
-        match UNITS.get(s) {
-            None => panic!("No units for {}", s),
-            Some(ulist) => assert_eq!(ulist.len(), 3),
-        }
-    }
-
     for (i, _) in SQUARES.iter().enumerate() {
         assert_eq!(IUNITS[i].len(), 3);
-    }
-
-    for s in SQUARES.iter() {
-        match PEERS.get(s) {
-            None => panic!("No peers for {}", s),
-            Some(plist) => assert_eq!(plist.len(), 20),
-        }
     }
 
     for (i, _) in SQUARES.iter().enumerate() {
