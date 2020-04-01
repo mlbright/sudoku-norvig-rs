@@ -27,7 +27,7 @@ lazy_static! {
         }
         isquares
     };
-    static ref UNITLIST: Vec<Vec<String>> = {
+    static ref IUNITLIST: Vec<Vec<String>> = {
         let mut unitlist: Vec<Vec<String>> = vec![];
 
         for c in DIGITS.chars() {
@@ -49,9 +49,9 @@ lazy_static! {
 
         unitlist
     };
-    static ref IUNITLIST: std::vec::Vec<Vec<usize>> = {
+    static ref UNITLIST: std::vec::Vec<Vec<usize>> = {
         let mut unitlist: Vec<Vec<usize>> = vec![];
-        for unit in UNITLIST.iter() {
+        for unit in IUNITLIST.iter() {
             let mut u: Vec<usize> = vec![];
             for sq in unit.iter() {
                 let d = ISQUARES.get(sq).unwrap();
@@ -61,11 +61,11 @@ lazy_static! {
         }
         unitlist
     };
-    static ref IUNITS: Vec<Vec<Vec<usize>>> = {
+    static ref UNITS: Vec<Vec<Vec<usize>>> = {
         let mut units: Vec<Vec<Vec<usize>>> = Vec::with_capacity(81);
         for (i, _) in SQUARES.iter().enumerate() {
             let mut group: Vec<Vec<usize>> = vec![];
-            for unit in IUNITLIST.iter() {
+            for unit in UNITLIST.iter() {
                 for j in unit.iter() {
                     if i == *j {
                         group.push(unit.clone());
@@ -78,11 +78,11 @@ lazy_static! {
 
         units
     };
-    static ref IPEERS: Vec<Vec<usize>> = {
+    static ref PEERS: Vec<Vec<usize>> = {
         let mut peers: Vec<Vec<usize>> = Vec::with_capacity(20);
         for (i, _) in SQUARES.iter().enumerate() {
             let mut peer_set: Vec<usize> = vec![];
-            for unit in IUNITS[i].iter() {
+            for unit in UNITS[i].iter() {
                 for square in unit.iter() {
                     if *square != i {
                         peer_set.push(*square);
@@ -100,15 +100,15 @@ lazy_static! {
 fn test() {
     assert_eq!(SQUARES.len(), 81);
     assert_eq!(ISQUARES.len(), 81);
-    assert_eq!(UNITLIST.len(), 27);
     assert_eq!(IUNITLIST.len(), 27);
+    assert_eq!(UNITLIST.len(), 27);
 
     for (i, _) in SQUARES.iter().enumerate() {
-        assert_eq!(IUNITS[i].len(), 3);
+        assert_eq!(UNITS[i].len(), 3);
     }
 
     for (i, _) in SQUARES.iter().enumerate() {
-        assert_eq!(IPEERS[i].len(), 20);
+        assert_eq!(PEERS[i].len(), 20);
     }
 }
 
@@ -197,7 +197,7 @@ fn eliminate(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
     if puzzle[square].len() == 1 {
-        for peer in IPEERS[square].iter() {
+        for peer in PEERS[square].iter() {
             if !eliminate(puzzle, *peer, &reduced_possibilities) {
                 return false;
             }
@@ -205,7 +205,7 @@ fn eliminate(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
     }
 
     // (2) If a unit u is reduced to only one place for a value d, then put it there.
-    for unit in IUNITS[square].iter() {
+    for unit in UNITS[square].iter() {
         let mut spots: Vec<usize> = vec![];
         for sq in unit {
             if puzzle[*sq].contains(value) {
