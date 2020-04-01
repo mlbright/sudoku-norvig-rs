@@ -163,15 +163,6 @@ fn test() {
     for (i, _) in SQUARES.iter().enumerate() {
         assert_eq!(IPEERS[i].len(), 20);
     }
-
-    // TODO: need assertions for units["C2"] and peers["C2"]
-    // println!("{:?}", UNITS.get("C2").unwrap());
-    // let mut test = PEERS.get("C2").unwrap().clone();
-    // test.sort();
-    // println!("{:?}", test);
-
-    println!("{:?}", IUNITS[19]);
-    println!("{:?}", IPEERS[19]);
 }
 
 fn main() {
@@ -386,8 +377,8 @@ fn time_solve(grid: &str) -> Option<std::time::Duration> {
 fn random_puzzle() -> String {
     let mut rng = rand::thread_rng();
     let mut puzzle: Vec<String> = Vec::with_capacity(81);
-    for (square, _) in SQUARES.iter().enumerate() {
-        puzzle[square] = DIGITS.to_string();
+    for _ in 0..SQUARES.len() {
+        puzzle.push(DIGITS.to_string());
     }
 
     let mut random_squares = SQUARES.clone();
