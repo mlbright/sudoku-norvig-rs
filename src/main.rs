@@ -15,6 +15,7 @@ use std::time::Duration;
 use std::time::Instant;
 
 static DIGITS: &str = "123456789";
+static VALID: &str = ".0123456789";
 static ROWS: &str = "ABCDEFGHI";
 static PUZZLE_N: usize = 17;
 
@@ -101,9 +102,7 @@ fn test() {
     }
 
     // TODO: need assertions for units["C2"] and peers["C2"]
-    //
     // println!("{:?}", UNITS.get("C2").unwrap());
-
     // let mut test = PEERS.get("C2").unwrap().clone();
     // test.sort();
     // println!("{:?}", test);
@@ -111,18 +110,6 @@ fn test() {
 
 fn main() {
     test();
-
-    // let grid1 = "003020600900305001001806400008102900700000008006708200002609500800203009005010300";
-    // let grid2 = "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......";
-    // let grid3 = "6..1.7..4..5.4.....27.6.....3...5.7..9..3...2...2...3......6..5....51..62..4..8..";
-    //
-    // super hard or impossible?
-    // let impossible = ".....6....59.....82....8....45........3........6..3.54...325..6..................";
-    //
-    // if let Some(solution) = solve(&grid1) {
-    //     format_grid(&solution);
-    // };
-
     solve_all(&from_file("easy50.txt"), "easy");
     solve_all(&from_file("top95.txt"), "hard");
     solve_all(&from_file("hardest.txt"), "hardest");
@@ -166,14 +153,11 @@ fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
 }
 
 fn grid_values(grid: &str) -> HashMap<String, String> {
-    let mut valid = DIGITS.to_string();
-    valid.push('.');
-    valid.push('0');
     let mut puzzle: HashMap<String, String> = HashMap::new();
     let mut i = 0;
     for c in grid.chars() {
         let value = c.to_string();
-        if valid.contains(&value) {
+        if VALID.contains(&value) {
             puzzle.entry(SQUARES[i].clone()).or_insert(value);
             i = i + 1;
         }
@@ -310,15 +294,24 @@ fn solve_all(grids: &Vec<String>, name: &str) {
     }
 
     let n = grids.len();
-    let s = sum(&times);
+
+    let mut sum = Duration::new(0, 0);
+    let mut max = Duration::new(0, 0);
+    for duration in times.iter() {
+        sum = sum + *duration;
+        if duration > &max {
+            max = *duration;
+        }
+    }
+
     println!(
         "Solved {} of {} {} puzzles (avg. {:.4} secs ({:.2} Hz), max {:.4} secs).",
         times.len(),
         n,
         name,
-        s.as_secs_f64() / n as f64,
-        n as f64 / s.as_secs_f64(),
-        max(&times).as_secs_f64(),
+        sum.as_secs_f64() / n as f64,
+        n as f64 / sum.as_secs_f64(),
+        max.as_secs_f64(),
     );
 }
 
@@ -329,24 +322,6 @@ fn time_solve(grid: &str) -> Option<std::time::Duration> {
         return Some(duration);
     }
     None
-}
-
-fn max(durations: &Vec<std::time::Duration>) -> std::time::Duration {
-    let mut max = Duration::new(0, 0);
-    for duration in durations.iter() {
-        if duration > &max {
-            max = *duration;
-        }
-    }
-    return max;
-}
-
-fn sum(durations: &Vec<std::time::Duration>) -> std::time::Duration {
-    let mut sum = Duration::new(0, 0);
-    for duration in durations.iter() {
-        sum = sum + *duration;
-    }
-    return sum;
 }
 
 fn random_puzzle() -> String {
