@@ -188,12 +188,11 @@ fn main() {
     solve_all(&random_puzzles, "random");
 }
 
-fn format_grid(solution: &HashMap<String, String>) -> String {
+fn format_grid(solution: &Vec<String>) -> String {
     let mut show: String = "".to_string();
-    for sq in SQUARES.iter() {
-        let v = solution.get(sq).unwrap();
-        if v.len() == 1 {
-            show.push_str(v);
+    for (i, _) in SQUARES.iter().enumerate() {
+        if solution[i].len() == 1 {
+            show.push_str(&solution[i]);
         } else {
             show.push('.');
         }
@@ -201,16 +200,16 @@ fn format_grid(solution: &HashMap<String, String>) -> String {
     show
 }
 
-fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
+fn parse_grid(grid: &str) -> Option<Vec<String>> {
     // To start, every square can be any digit; then assign values from the grid.
-    let mut solution: HashMap<String, String> = HashMap::new();
-    for s in SQUARES.iter() {
-        solution.insert(s.clone(), DIGITS.to_string());
+    let mut solution: Vec<String> = Vec::with_capacity(81);
+    for _ in 0..SQUARES.len() {
+        solution.push(DIGITS.to_string());
     }
     let puzzle = grid_values(grid);
-    for (square, value) in &puzzle {
+    for (i, value) in puzzle.iter().enumerate() {
         if DIGITS.contains(value) {
-            if !assign(&mut solution, square, value) {
+            if !assign(&mut solution, i, value) {
                 return None;
             }
         }
@@ -218,22 +217,20 @@ fn parse_grid(grid: &str) -> Option<HashMap<String, String>> {
     Some(solution)
 }
 
-fn grid_values(grid: &str) -> HashMap<String, String> {
-    let mut puzzle: HashMap<String, String> = HashMap::new();
-    let mut i = 0;
+fn grid_values(grid: &str) -> Vec<String> {
+    let mut puzzle: Vec<String> = Vec::with_capacity(81);
     for c in grid.chars() {
         let value = c.to_string();
         if VALID.contains(&value) {
-            puzzle.entry(SQUARES[i].clone()).or_insert(value);
-            i = i + 1;
+            puzzle.push(value);
         }
     }
     assert_eq!(puzzle.len(), 81);
     puzzle
 }
 
-fn assign(puzzle: &mut HashMap<String, String>, square: &String, value: &String) -> bool {
-    let other_values = puzzle.get(square).unwrap().clone();
+fn assign(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
+    let other_values = puzzle[square].clone();
     for other_value in other_values.chars() {
         let s = other_value.to_string();
         if s != *value {
@@ -245,8 +242,8 @@ fn assign(puzzle: &mut HashMap<String, String>, square: &String, value: &String)
     true
 }
 
-fn eliminate(puzzle: &mut HashMap<String, String>, square: &String, value: &String) -> bool {
-    let values_at_square = puzzle.get(square).unwrap();
+fn eliminate(puzzle: &mut Vec<String>, square: usize, value: &String) -> bool {
+    let values_at_square = puzzle[square].clone();
 
     if !values_at_square.contains(value) {
         return true; // Already eliminated
@@ -258,24 +255,23 @@ fn eliminate(puzzle: &mut HashMap<String, String>, square: &String, value: &Stri
         return false; // Contradiction, removed the last digit
     }
 
-    puzzle.insert(square.clone(), reduced_possibilities.clone());
+    puzzle[square] = reduced_possibilities.clone();
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
-    if reduced_possibilities.len() == 1 {
-        for peer in PEERS.get(square).unwrap().iter() {
-            if !eliminate(puzzle, peer, &reduced_possibilities) {
+    if puzzle[square].len() == 1 {
+        for peer in IPEERS[square].iter() {
+            if !eliminate(puzzle, *peer, &reduced_possibilities) {
                 return false;
             }
         }
     }
 
     // (2) If a unit u is reduced to only one place for a value d, then put it there.
-    let units = UNITS.get(square).unwrap();
-    for unit in units.iter() {
-        let mut spots: Vec<String> = vec![];
-        for sq in unit.iter() {
-            if puzzle.get(sq).unwrap().contains(value) {
-                spots.push(sq.clone());
+    for unit in IUNITS[square].iter() {
+        let mut spots: Vec<usize> = vec![];
+        for sq in unit {
+            if puzzle[*sq].contains(value) {
+                spots.push(*sq);
             }
         }
 
@@ -284,7 +280,7 @@ fn eliminate(puzzle: &mut HashMap<String, String>, square: &String, value: &Stri
         }
 
         if spots.len() == 1 {
-            if !assign(puzzle, &spots[0], &value) {
+            if !assign(puzzle, spots[0], &value) {
                 return false;
             }
         }
@@ -292,35 +288,35 @@ fn eliminate(puzzle: &mut HashMap<String, String>, square: &String, value: &Stri
     true
 }
 
-fn solve(grid: &str) -> Option<HashMap<String, String>> {
+fn solve(grid: &str) -> Option<Vec<String>> {
     match parse_grid(grid) {
         None => None,
         Some(puzzle) => search(Some(puzzle)),
     }
 }
 
-fn search(p: Option<HashMap<String, String>>) -> Option<HashMap<String, String>> {
+fn search(p: Option<Vec<String>>) -> Option<Vec<String>> {
     match p {
         None => None,
         Some(puzzle) => {
-            let mut min_square = String::from("");
+            let mut min_square: usize = 82;
             let mut min_size = 10;
 
-            for square in SQUARES.iter() {
-                let size = puzzle.get(square).unwrap().len();
+            for (square, _) in SQUARES.iter().enumerate() {
+                let size = puzzle[square].len();
                 if size > 1 && size < min_size {
-                    min_square = square.clone();
+                    min_square = square;
                     min_size = size;
                 }
             }
 
-            if min_square == "" {
+            if min_square == 82 {
                 return Some(puzzle);
             }
 
-            for other_values in puzzle.get(&min_square).unwrap().chars() {
+            for other_values in puzzle[min_square].chars() {
                 let mut puzzle_copy = puzzle.clone();
-                if assign(&mut puzzle_copy, &min_square, &other_values.to_string()) {
+                if assign(&mut puzzle_copy, min_square, &other_values.to_string()) {
                     if let Some(result) = search(Some(puzzle_copy)) {
                         return Some(result);
                     }
@@ -389,33 +385,32 @@ fn time_solve(grid: &str) -> Option<std::time::Duration> {
 
 fn random_puzzle() -> String {
     let mut rng = rand::thread_rng();
-    let mut puzzle: HashMap<String, String> = HashMap::new();
-    for square in SQUARES.iter() {
-        puzzle
-            .entry(square.to_string())
-            .or_insert(DIGITS.to_string());
+    let mut puzzle: Vec<String> = Vec::with_capacity(81);
+    for (square, _) in SQUARES.iter().enumerate() {
+        puzzle[square] = DIGITS.to_string();
     }
 
     let mut random_squares = SQUARES.clone();
     random_squares.shuffle(&mut rng);
 
     for random_square in random_squares.iter() {
-        let square_possibilities = puzzle.get(random_square).unwrap().clone();
+        let random_index = ISQUARES.get(random_square).unwrap();
+        let square_possibilities = puzzle[*random_index].clone();
         let i = rng.gen_range(0, square_possibilities.len());
 
         if !assign(
             &mut puzzle,
-            &random_square,
+            *random_index,
             &square_possibilities.chars().nth(i).unwrap().to_string(),
         ) {
             break;
         }
 
         let mut successfully_assigned: String = String::from("");
-        for square in SQUARES.iter() {
-            let values_at_square = puzzle.get(square).unwrap();
+        for (square, _) in SQUARES.iter().enumerate() {
+            let values_at_square = puzzle[square].clone();
             if values_at_square.len() == 1 {
-                successfully_assigned.push_str(values_at_square);
+                successfully_assigned.push_str(&values_at_square);
             }
         }
 
