@@ -21,8 +21,8 @@ static PUZZLE_N: usize = 17;
 
 lazy_static! {
     static ref SQUARES: Vec<String> = cross(ROWS, DIGITS);
-    static ref UNITLIST: std::vec::Vec<std::vec::Vec<std::string::String>> = {
-        let mut unitlist: std::vec::Vec<std::vec::Vec<std::string::String>> = vec![];
+    static ref UNITLIST: Vec<Vec<String>> = {
+        let mut unitlist: Vec<Vec<String>> = vec![];
 
         for c in DIGITS.chars() {
             unitlist.push(cross(ROWS, &c.to_string()));
