@@ -402,8 +402,8 @@ func main() {
 	solve_all(from_file("easy50.txt"), "easy")
 	solve_all(from_file("top95.txt"), "hard")
 	solve_all(from_file("hardest.txt"), "hardest")
-	random_puzzles := make([]string, 100)
-	for j := 0; j < 100; j++ {
+	random_puzzles := make([]string, 99)
+	for j := 0; j < 99; j++ {
 		random_puzzles[j] = random_puzzle()
 	}
 	solve_all(random_puzzles, "random")

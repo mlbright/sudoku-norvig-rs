@@ -118,7 +118,7 @@ fn main() {
     solve_all(&from_file("hardest.txt"), "hardest");
 
     let mut random_puzzles: Vec<String> = vec![];
-    for _ in 0..100 {
+    for _ in 0..99 {
         random_puzzles.push(random_puzzle());
     }
 
