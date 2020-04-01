@@ -158,10 +158,10 @@ fn parse_grid(grid: &str) -> Option<Vec<String>> {
 }
 
 fn assign(puzzle: &mut Vec<String>, square: usize, value_to_assign: char) -> bool {
-    let other_values = puzzle[square].clone();
-    for other_value in other_values.chars() {
-        if value_to_assign != other_value {
-            if !eliminate(puzzle, square, other_value) {
+    let values = puzzle[square].clone();
+    for value in values.chars() {
+        if value != value_to_assign {
+            if !eliminate(puzzle, square, value) {
                 return false;
             }
         }
