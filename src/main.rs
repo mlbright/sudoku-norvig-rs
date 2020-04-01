@@ -26,6 +26,13 @@ lazy_static! {
         }
         isquares
     };
+    static ref BLANK_PUZZLE: Vec<String> = {
+        let mut blank_puzzle: Vec<String> = Vec::with_capacity(81);
+        for _ in 0..SQUARES.len() {
+            blank_puzzle.push(DIGITS.to_string());
+        }
+        blank_puzzle
+    };
     static ref IUNITLIST: Vec<Vec<String>> = {
         let mut unitlist: Vec<Vec<String>> = vec![];
 
@@ -139,10 +146,7 @@ fn format_grid(solution: &Vec<String>) -> String {
 
 fn parse_grid(grid: &str) -> Option<Vec<String>> {
     // To start, every square can be any digit; then assign values from the grid.
-    let mut solution: Vec<String> = Vec::with_capacity(81);
-    for _ in 0..SQUARES.len() {
-        solution.push(DIGITS.to_string());
-    }
+    let mut solution = BLANK_PUZZLE.clone();
     for (i, value) in grid.chars().enumerate() {
         if DIGITS.contains(value) {
             if !assign(&mut solution, i, value) {
