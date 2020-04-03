@@ -49,7 +49,7 @@ Solved 50 of 50 easy puzzles (avg 0.0058 secs (173.57 Hz), max 0.0134 secs).
 Solved 95 of 95 hard puzzles (avg 0.0223 secs (44.84 Hz), max 0.0990 secs).
 Solved 11 of 11 hardest puzzles (avg 0.0066 secs (151.90 Hz), max 0.0091 secs).
 Solved 99 of 99 random puzzles (avg 0.0063 secs (157.92 Hz), max 0.0124 secs).
-administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ ./sugoku
+administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ ./sugoku # go build sugoku.go
 All tests pass.
 Solved 50 of 50 easy puzzles (avg 0.0010 secs (999.13 Hz), max 0.0022 secs).
 Solved 95 of 95 hard puzzles (avg 0.0030 secs (336.32 Hz), max 0.0146 secs).
