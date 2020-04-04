@@ -218,10 +218,10 @@ fn search(p: Option<Vec<String>>) -> Option<Vec<String>> {
             let mut min_square: usize = 82;
             let mut min_size = 10;
 
-            for (square, _) in SQUARES.iter().enumerate() {
-                let size = puzzle[square].len();
+            for (i,square) in puzzle.iter().enumerate() {
+                let size = square.len();
                 if size > 1 && size < min_size {
-                    min_square = square;
+                    min_square = i;
                     min_size = size;
                 }
             }
