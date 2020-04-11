@@ -26,13 +26,7 @@ lazy_static! {
         }
         isquares
     };
-    static ref BLANK_PUZZLE: Vec<String> = {
-        let mut blank_puzzle: Vec<String> = Vec::with_capacity(81);
-        for _ in 0..SQUARES.len() {
-            blank_puzzle.push(DIGITS.to_string());
-        }
-        blank_puzzle
-    };
+    static ref BLANK_PUZZLE: Vec<String> = { vec![DIGITS.to_string(); 81] };
     static ref IUNITLIST: Vec<Vec<String>> = {
         let mut unitlist: Vec<Vec<String>> = vec![];
 
@@ -123,18 +117,13 @@ fn main() {
     solve_all(&from_file("easy50.txt"), "easy");
     solve_all(&from_file("top95.txt"), "hard");
     solve_all(&from_file("hardest.txt"), "hardest");
-
-    let mut random_puzzles: Vec<String> = vec![];
-    for _ in 0..99 {
-        random_puzzles.push(random_puzzle());
-    }
-
+    let random_puzzles: Vec<String> = vec![random_puzzle(); 100];
     solve_all(&random_puzzles, "random");
 }
 
 fn format_grid(solution: &Vec<String>) -> String {
     let mut show: String = "".to_string();
-    for (i, _) in SQUARES.iter().enumerate() {
+    for i in 0..SQUARES.len() {
         if solution[i].len() == 1 {
             show.push_str(&solution[i]);
         } else {
@@ -157,12 +146,15 @@ fn parse_grid(grid: &str) -> Option<Vec<String>> {
     Some(solution)
 }
 
-fn assign(puzzle: &mut Vec<String>, square: usize, value_to_assign: char) -> bool {
+fn assign(puzzle: &mut [String], square: usize, value_to_assign: char) -> bool {
     let values = puzzle[square].clone();
-    values.chars().filter(|c| *c != value_to_assign).all(|c| eliminate(puzzle,square,c))
+    values
+        .chars()
+        .filter(|c| *c != value_to_assign)
+        .all(|c| eliminate(puzzle, square, c))
 }
 
-fn eliminate(puzzle: &mut Vec<String>, square: usize, value_to_eliminate: char) -> bool {
+fn eliminate(puzzle: &mut [String], square: usize, value_to_eliminate: char) -> bool {
     if !puzzle[square].contains(value_to_eliminate) {
         return true;
     }
@@ -218,7 +210,7 @@ fn search(p: Option<Vec<String>>) -> Option<Vec<String>> {
             let mut min_square: usize = 82;
             let mut min_size = 10;
 
-            for (i,square) in puzzle.iter().enumerate() {
+            for (i, square) in puzzle.iter().enumerate() {
                 let size = square.len();
                 if size > 1 && size < min_size {
                     min_square = i;
@@ -260,6 +252,7 @@ fn from_file(filename: impl AsRef<Path>) -> Vec<String> {
 }
 
 fn solve_all(grids: &Vec<String>, name: &str) {
+    let n = grids.len();
     let mut times: Vec<std::time::Duration> = vec![];
 
     for grid in grids.iter() {
@@ -267,8 +260,6 @@ fn solve_all(grids: &Vec<String>, name: &str) {
             times.push(t);
         }
     }
-
-    let n = grids.len();
 
     let mut sum = Duration::new(0, 0);
     let mut max = Duration::new(0, 0);
