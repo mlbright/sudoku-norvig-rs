@@ -150,11 +150,14 @@ fn parse_grid(grid: &str) -> Option<Vec<String>> {
 }
 
 fn assign(puzzle: &mut [String], square: usize, value_to_assign: char) -> bool {
-    let values = puzzle[square].clone();
-    values
+    let eliminate_these: Vec<char> = puzzle[square]
         .chars()
         .filter(|c| *c != value_to_assign)
-        .all(|c| eliminate(puzzle, square, c))
+        .collect();
+
+    eliminate_these
+        .iter()
+        .all(|c| eliminate(puzzle, square, *c))
 }
 
 fn eliminate(puzzle: &mut [String], square: usize, value_to_eliminate: char) -> bool {
