@@ -117,7 +117,10 @@ fn main() {
     solve_all(&from_file("easy50.txt"), "easy");
     solve_all(&from_file("top95.txt"), "hard");
     solve_all(&from_file("hardest.txt"), "hardest");
-    let random_puzzles: Vec<String> = vec![random_puzzle(); 100];
+    let mut random_puzzles: Vec<String> = vec![];
+    for _ in 0..99 {
+        random_puzzles.push(random_puzzle());
+    }
     solve_all(&random_puzzles, "random");
 }
 
@@ -292,11 +295,7 @@ fn time_solve(grid: &str) -> Option<std::time::Duration> {
 
 fn random_puzzle() -> String {
     let mut rng = rand::thread_rng();
-    let mut puzzle: Vec<String> = Vec::with_capacity(81);
-    for _ in 0..SQUARES.len() {
-        puzzle.push(DIGITS.to_string());
-    }
-
+    let mut puzzle: Vec<String> = vec![DIGITS.to_string(); SQUARES.len()];
     let mut random_squares = SQUARES.clone();
     random_squares.shuffle(&mut rng);
 
