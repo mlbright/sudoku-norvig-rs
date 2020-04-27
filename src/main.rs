@@ -23,10 +23,10 @@ static ROWS: &str = "ABCDEFGHI";
 
 lazy_static! {
     static ref SQUARES: Vec<String> = cross(ROWS, DIGITS);
-    static ref ISQUARES: HashMap<String, u32> = {
-        let mut isquares: HashMap<String, u32> = HashMap::new();
+    static ref ISQUARES: HashMap<String, usize> = {
+        let mut isquares: HashMap<String, usize> = HashMap::new();
         for (i, sq) in SQUARES.iter().enumerate() {
-            isquares.insert(sq.clone(), i as u32);
+            isquares.insert(sq.clone(), i);
         }
         isquares
     };
@@ -53,10 +53,10 @@ lazy_static! {
 
         unitlist
     };
-    static ref UNITLIST: std::vec::Vec<Vec<u32>> = {
-        let mut unitlist: Vec<Vec<u32>> = vec![];
+    static ref UNITLIST: std::vec::Vec<Vec<usize>> = {
+        let mut unitlist: Vec<Vec<usize>> = vec![];
         for unit in IUNITLIST.iter() {
-            let mut u: Vec<u32> = vec![];
+            let mut u: Vec<usize> = vec![];
             for sq in unit.iter() {
                 let d = ISQUARES.get(sq).unwrap();
                 u.push(*d);
@@ -65,13 +65,13 @@ lazy_static! {
         }
         unitlist
     };
-    static ref UNITS: Vec<Vec<Vec<u32>>> = {
-        let mut units: Vec<Vec<Vec<u32>>> = Vec::with_capacity(81);
+    static ref UNITS: Vec<Vec<Vec<usize>>> = {
+        let mut units: Vec<Vec<Vec<usize>>> = Vec::with_capacity(81);
         for (i, _) in SQUARES.iter().enumerate() {
-            let mut group: Vec<Vec<u32>> = vec![];
+            let mut group: Vec<Vec<usize>> = vec![];
             for unit in UNITLIST.iter() {
                 for j in unit.iter() {
-                    if i == *j as usize {
+                    if i == *j {
                         group.push(unit.clone());
                         break;
                     }
@@ -82,13 +82,13 @@ lazy_static! {
 
         units
     };
-    static ref PEERS: Vec<Vec<u32>> = {
-        let mut peers: Vec<Vec<u32>> = Vec::with_capacity(20);
+    static ref PEERS: Vec<Vec<usize>> = {
+        let mut peers: Vec<Vec<usize>> = Vec::with_capacity(20);
         for (i, _) in SQUARES.iter().enumerate() {
-            let mut peer_set: Vec<u32> = vec![];
+            let mut peer_set: Vec<usize> = vec![];
             for unit in UNITS[i].iter() {
                 for square in unit.iter() {
-                    if *square as usize != i {
+                    if *square != i {
                         peer_set.push(*square);
                     }
                 }
@@ -145,7 +145,8 @@ fn parse_grid(grid: &str) -> Option<Vec<Cell>> {
     let mut solution = BLANK_PUZZLE.clone();
     for (i, c) in grid.chars().enumerate() {
         if c.is_ascii_digit() && c != '0' {
-            if !assign(&mut solution, i as u32, c.to_digit(10).unwrap() - 1) {
+            let d = c.to_digit(10).unwrap() as usize;
+            if !assign(&mut solution, i, d - 1) {
                 return None;
             }
         }
@@ -153,39 +154,35 @@ fn parse_grid(grid: &str) -> Option<Vec<Cell>> {
     Some(solution)
 }
 
-fn assign(puzzle: &mut [Cell], square: u32, value_to_assign: u32) -> bool {
-    puzzle[square as usize]
+fn assign(puzzle: &mut [Cell], square: usize, value_to_assign: usize) -> bool {
+    puzzle[square]
         .possibilities()
         .iter()
         .filter(|d| **d != value_to_assign)
         .map(|d| *d)
-        .collect::<Vec<u32>>()
+        .collect::<Vec<usize>>()
         .iter()
         .all(|c| eliminate(puzzle, square, *c))
 }
 
-fn eliminate(puzzle: &mut [Cell], square: u32, value_to_eliminate: u32) -> bool {
-    if !puzzle[square as usize].contains(value_to_eliminate as usize) {
+fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> bool {
+    if !puzzle[square].contains(value_to_eliminate) {
         return true;
     }
 
-    puzzle[square as usize].remove(value_to_eliminate as usize);
+    puzzle[square].remove(value_to_eliminate);
 
-    if puzzle[square as usize].len() == 0 {
+    if puzzle[square].len() == 0 {
         return false; // Contradiction, removed the last digit
     }
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
-    if puzzle[square as usize].len() == 1 {
-        for peer in PEERS[square as usize].iter() {
+    if puzzle[square].len() == 1 {
+        for peer in PEERS[square].iter() {
             if !eliminate(
                 puzzle,
                 *peer,
-                *puzzle[square as usize]
-                    .possibilities()
-                    .iter()
-                    .nth(0)
-                    .unwrap(),
+                *puzzle[square].possibilities().iter().nth(0).unwrap(),
             ) {
                 return false;
             }
@@ -193,10 +190,10 @@ fn eliminate(puzzle: &mut [Cell], square: u32, value_to_eliminate: u32) -> bool 
     }
 
     // (2) If a unit u is reduced to only one place for a value d, then put it there.
-    for unit in UNITS[square as usize].iter() {
-        let mut spots: Vec<u32> = vec![];
+    for unit in UNITS[square].iter() {
+        let mut spots: Vec<usize> = vec![];
         for sq in unit {
-            if puzzle[*sq as usize].contains(value_to_eliminate as usize) {
+            if puzzle[*sq].contains(value_to_eliminate) {
                 spots.push(*sq);
             }
         }
@@ -225,13 +222,13 @@ fn search(p: Option<Vec<Cell>>) -> Option<Vec<Cell>> {
     match p {
         None => None,
         Some(puzzle) => {
-            let mut min_square: u32 = 82;
+            let mut min_square = 82;
             let mut min_size = 10;
 
             for (i, square) in puzzle.iter().enumerate() {
                 let size = square.len();
                 if size > 1 && size < min_size {
-                    min_square = i as u32;
+                    min_square = i;
                     min_size = size;
                 }
             }
@@ -240,7 +237,7 @@ fn search(p: Option<Vec<Cell>>) -> Option<Vec<Cell>> {
                 return Some(puzzle);
             }
 
-            for other_value in puzzle[min_square as usize].possibilities() {
+            for other_value in puzzle[min_square].possibilities() {
                 let mut puzzle_copy = puzzle.clone();
                 if assign(&mut puzzle_copy, min_square, other_value) {
                     if let Some(result) = search(Some(puzzle_copy)) {
@@ -316,7 +313,7 @@ fn random_puzzle() -> String {
 
     for random_square in random_squares.iter() {
         let random_index = ISQUARES.get(random_square).unwrap();
-        let square_possibilities = puzzle[*random_index as usize].clone();
+        let square_possibilities = puzzle[*random_index].clone();
         let i = rng.gen_range(0, square_possibilities.len());
 
         if !assign(

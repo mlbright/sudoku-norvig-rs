@@ -30,12 +30,12 @@ impl Cell {
         s
     }
 
-    pub fn possibilities(&self) -> Vec<u32> {
+    pub fn possibilities(&self) -> Vec<usize> {
         self.bit_vector
             .iter()
             .enumerate()
-            .filter_map(|(i, b)| if b { Some(i as u32) } else { None })
-            .collect::<Vec<u32>>()
+            .filter_map(|(i, b)| if b { Some(i) } else { None })
+            .collect::<Vec<usize>>()
     }
 
     pub fn contains(&self, position: usize) -> bool {
@@ -46,10 +46,6 @@ impl Cell {
         self.bit_vector.set(position, false);
         self.length -= 1;
     }
-
-    pub fn set(&mut self, position: usize) {
-        self.bit_vector.set(position, true);
-    }
 }
 
 #[cfg(test)]
@@ -59,7 +55,6 @@ mod tests {
     #[test]
     fn test_contains() {
         let mut c = Cell::new();
-        c.set(8);
         c.remove(4);
         assert_eq!(true, c.contains(8));
         assert_eq!(false, c.contains(4));
