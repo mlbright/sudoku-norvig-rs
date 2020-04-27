@@ -156,11 +156,7 @@ fn parse_grid(grid: &str) -> Option<Vec<Cell>> {
 
 fn assign(puzzle: &mut [Cell], square: usize, value_to_assign: usize) -> bool {
     puzzle[square]
-        .possibilities()
-        .iter()
-        .filter(|d| **d != value_to_assign)
-        .map(|d| *d)
-        .collect::<Vec<usize>>()
+        .possibilities_except(value_to_assign)
         .iter()
         .all(|c| eliminate(puzzle, square, *c))
 }
@@ -179,11 +175,7 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
     if puzzle[square].len() == 1 {
         for peer in PEERS[square].iter() {
-            if !eliminate(
-                puzzle,
-                *peer,
-                *puzzle[square].possibilities().iter().nth(0).unwrap(),
-            ) {
+            if !eliminate(puzzle, *peer, puzzle[square].first()) {
                 return false;
             }
         }
@@ -237,9 +229,9 @@ fn search(p: Option<Vec<Cell>>) -> Option<Vec<Cell>> {
                 return Some(puzzle);
             }
 
-            for other_value in puzzle[min_square].possibilities() {
+            for value in puzzle[min_square].possibilities() {
                 let mut puzzle_copy = puzzle.clone();
-                if assign(&mut puzzle_copy, min_square, other_value) {
+                if assign(&mut puzzle_copy, min_square, value) {
                     if let Some(result) = search(Some(puzzle_copy)) {
                         return Some(result);
                     }
@@ -313,13 +305,13 @@ fn random_puzzle() -> String {
 
     for random_square in random_squares.iter() {
         let random_index = ISQUARES.get(random_square).unwrap();
-        let square_possibilities = puzzle[*random_index].clone();
-        let i = rng.gen_range(0, square_possibilities.len());
+        let possible_values = puzzle[*random_index].clone();
+        let i = rng.gen_range(0, possible_values.len());
 
         if !assign(
             &mut puzzle,
             *random_index,
-            *square_possibilities.possibilities().iter().nth(i).unwrap(),
+            *possible_values.possibilities().iter().nth(i).unwrap(),
         ) {
             break;
         }
@@ -327,7 +319,7 @@ fn random_puzzle() -> String {
         let mut successfully_assigned = vec![];
         for square in 0..SQUARES.len() {
             if puzzle[square].len() == 1 {
-                successfully_assigned.push(*puzzle[square].possibilities().iter().nth(0).unwrap());
+                successfully_assigned.push(puzzle[square].first());
             }
         }
 

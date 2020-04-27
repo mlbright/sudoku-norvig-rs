@@ -38,6 +38,24 @@ impl Cell {
             .collect::<Vec<usize>>()
     }
 
+    pub fn possibilities_except(&self, exception: usize) -> Vec<usize> {
+        self.bit_vector
+            .iter()
+            .enumerate()
+            .filter_map(|(i, b)| if b { Some(i) } else { None })
+            .filter(|u| *u != exception)
+            .collect::<Vec<usize>>()
+    }
+
+    pub fn first(&self) -> usize {
+        for (i, b) in self.bit_vector.iter().enumerate() {
+            if b {
+                return i;
+            }
+        }
+        return 10;
+    }
+
     pub fn contains(&self, position: usize) -> bool {
         self.bit_vector[position]
     }
