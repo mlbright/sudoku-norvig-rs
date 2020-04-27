@@ -1,6 +1,11 @@
 #[macro_use]
 extern crate lazy_static;
 extern crate rand;
+#[macro_use]
+extern crate smallbitvec;
+
+mod cell;
+use cell::Cell;
 
 use itertools::iproduct;
 use rand::seq::SliceRandom;
@@ -15,18 +20,17 @@ use std::time::Instant;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";
-static PUZZLE_N: usize = 17;
 
 lazy_static! {
     static ref SQUARES: Vec<String> = cross(ROWS, DIGITS);
-    static ref ISQUARES: HashMap<String, usize> = {
-        let mut isquares: HashMap<String, usize> = HashMap::new();
+    static ref ISQUARES: HashMap<String, u32> = {
+        let mut isquares: HashMap<String, u32> = HashMap::new();
         for (i, sq) in SQUARES.iter().enumerate() {
-            isquares.insert(sq.clone(), i);
+            isquares.insert(sq.clone(), i as u32);
         }
         isquares
     };
-    static ref BLANK_PUZZLE: Vec<String> = { vec![DIGITS.to_string(); 81] };
+    static ref BLANK_PUZZLE: Vec<Cell> = { vec![Cell::new(); 81] };
     static ref IUNITLIST: Vec<Vec<String>> = {
         let mut unitlist: Vec<Vec<String>> = vec![];
 
@@ -49,10 +53,10 @@ lazy_static! {
 
         unitlist
     };
-    static ref UNITLIST: std::vec::Vec<Vec<usize>> = {
-        let mut unitlist: Vec<Vec<usize>> = vec![];
+    static ref UNITLIST: std::vec::Vec<Vec<u32>> = {
+        let mut unitlist: Vec<Vec<u32>> = vec![];
         for unit in IUNITLIST.iter() {
-            let mut u: Vec<usize> = vec![];
+            let mut u: Vec<u32> = vec![];
             for sq in unit.iter() {
                 let d = ISQUARES.get(sq).unwrap();
                 u.push(*d);
@@ -61,13 +65,13 @@ lazy_static! {
         }
         unitlist
     };
-    static ref UNITS: Vec<Vec<Vec<usize>>> = {
-        let mut units: Vec<Vec<Vec<usize>>> = Vec::with_capacity(81);
+    static ref UNITS: Vec<Vec<Vec<u32>>> = {
+        let mut units: Vec<Vec<Vec<u32>>> = Vec::with_capacity(81);
         for (i, _) in SQUARES.iter().enumerate() {
-            let mut group: Vec<Vec<usize>> = vec![];
+            let mut group: Vec<Vec<u32>> = vec![];
             for unit in UNITLIST.iter() {
                 for j in unit.iter() {
-                    if i == *j {
+                    if i == *j as usize {
                         group.push(unit.clone());
                         break;
                     }
@@ -78,13 +82,13 @@ lazy_static! {
 
         units
     };
-    static ref PEERS: Vec<Vec<usize>> = {
-        let mut peers: Vec<Vec<usize>> = Vec::with_capacity(20);
+    static ref PEERS: Vec<Vec<u32>> = {
+        let mut peers: Vec<Vec<u32>> = Vec::with_capacity(20);
         for (i, _) in SQUARES.iter().enumerate() {
-            let mut peer_set: Vec<usize> = vec![];
+            let mut peer_set: Vec<u32> = vec![];
             for unit in UNITS[i].iter() {
                 for square in unit.iter() {
-                    if *square != i {
+                    if *square as usize != i {
                         peer_set.push(*square);
                     }
                 }
@@ -124,11 +128,11 @@ fn main() {
     solve_all(&random_puzzles, "random");
 }
 
-fn format_grid(solution: &Vec<String>) -> String {
+fn format_grid(solution: &Vec<Cell>) -> String {
     let mut show: String = "".to_string();
     for i in 0..SQUARES.len() {
         if solution[i].len() == 1 {
-            show.push_str(&solution[i]);
+            show.push_str(&solution[i].to_string());
         } else {
             show.push('.');
         }
@@ -136,12 +140,12 @@ fn format_grid(solution: &Vec<String>) -> String {
     show
 }
 
-fn parse_grid(grid: &str) -> Option<Vec<String>> {
+fn parse_grid(grid: &str) -> Option<Vec<Cell>> {
     // To start, every square can be any digit; then assign values from the grid.
     let mut solution = BLANK_PUZZLE.clone();
-    for (i, value) in grid.chars().enumerate() {
-        if DIGITS.contains(value) {
-            if !assign(&mut solution, i, value) {
+    for (i, c) in grid.chars().enumerate() {
+        if c.is_ascii_digit() && c != '0' {
+            if !assign(&mut solution, i as u32, c.to_digit(10).unwrap() - 1) {
                 return None;
             }
         }
@@ -149,42 +153,50 @@ fn parse_grid(grid: &str) -> Option<Vec<String>> {
     Some(solution)
 }
 
-fn assign(puzzle: &mut [String], square: usize, value_to_assign: char) -> bool {
-    let eliminate_these: Vec<char> = puzzle[square]
-        .chars()
-        .filter(|c| *c != value_to_assign)
-        .collect();
-
-    eliminate_these
+fn assign(puzzle: &mut [Cell], square: u32, value_to_assign: u32) -> bool {
+    puzzle[square as usize]
+        .possibilities()
+        .iter()
+        .filter(|d| **d != value_to_assign)
+        .map(|d| *d)
+        .collect::<Vec<u32>>()
         .iter()
         .all(|c| eliminate(puzzle, square, *c))
 }
 
-fn eliminate(puzzle: &mut [String], square: usize, value_to_eliminate: char) -> bool {
-    if !puzzle[square].contains(value_to_eliminate) {
+fn eliminate(puzzle: &mut [Cell], square: u32, value_to_eliminate: u32) -> bool {
+    if !puzzle[square as usize].contains(value_to_eliminate as usize) {
         return true;
     }
 
-    puzzle[square].retain(|c| c != value_to_eliminate);
+    puzzle[square as usize].remove(value_to_eliminate as usize);
 
-    if puzzle[square].len() == 0 {
+    if puzzle[square as usize].len() == 0 {
         return false; // Contradiction, removed the last digit
     }
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
-    if puzzle[square].len() == 1 {
-        for peer in PEERS[square].iter() {
-            if !eliminate(puzzle, *peer, puzzle[square].chars().nth(0).unwrap()) {
+    if puzzle[square as usize].len() == 1 {
+        for peer in PEERS[square as usize].iter() {
+            if !eliminate(
+                puzzle,
+                *peer,
+                *puzzle[square as usize]
+                    .possibilities()
+                    .iter()
+                    .nth(0)
+                    .unwrap(),
+            ) {
                 return false;
             }
         }
     }
 
     // (2) If a unit u is reduced to only one place for a value d, then put it there.
-    for unit in UNITS[square].iter() {
-        let mut spots: Vec<usize> = vec![];
+    for unit in UNITS[square as usize].iter() {
+        let mut spots: Vec<u32> = vec![];
         for sq in unit {
-            if puzzle[*sq].contains(value_to_eliminate) {
+            if puzzle[*sq as usize].contains(value_to_eliminate as usize) {
                 spots.push(*sq);
             }
         }
@@ -202,24 +214,24 @@ fn eliminate(puzzle: &mut [String], square: usize, value_to_eliminate: char) -> 
     true
 }
 
-fn solve(grid: &str) -> Option<Vec<String>> {
+fn solve(grid: &str) -> Option<Vec<Cell>> {
     match parse_grid(grid) {
         None => None,
         Some(puzzle) => search(Some(puzzle)),
     }
 }
 
-fn search(p: Option<Vec<String>>) -> Option<Vec<String>> {
+fn search(p: Option<Vec<Cell>>) -> Option<Vec<Cell>> {
     match p {
         None => None,
         Some(puzzle) => {
-            let mut min_square: usize = 82;
+            let mut min_square: u32 = 82;
             let mut min_size = 10;
 
             for (i, square) in puzzle.iter().enumerate() {
                 let size = square.len();
                 if size > 1 && size < min_size {
-                    min_square = i;
+                    min_square = i as u32;
                     min_size = size;
                 }
             }
@@ -228,7 +240,7 @@ fn search(p: Option<Vec<String>>) -> Option<Vec<String>> {
                 return Some(puzzle);
             }
 
-            for other_value in puzzle[min_square].chars() {
+            for other_value in puzzle[min_square as usize].possibilities() {
                 let mut puzzle_copy = puzzle.clone();
                 if assign(&mut puzzle_copy, min_square, other_value) {
                     if let Some(result) = search(Some(puzzle_copy)) {
@@ -298,36 +310,34 @@ fn time_solve(grid: &str) -> Option<std::time::Duration> {
 
 fn random_puzzle() -> String {
     let mut rng = rand::thread_rng();
-    let mut puzzle: Vec<String> = vec![DIGITS.to_string(); SQUARES.len()];
+    let mut puzzle: Vec<Cell> = BLANK_PUZZLE.clone();
     let mut random_squares = SQUARES.clone();
     random_squares.shuffle(&mut rng);
 
     for random_square in random_squares.iter() {
         let random_index = ISQUARES.get(random_square).unwrap();
-        let square_possibilities = puzzle[*random_index].clone();
+        let square_possibilities = puzzle[*random_index as usize].clone();
         let i = rng.gen_range(0, square_possibilities.len());
 
         if !assign(
             &mut puzzle,
             *random_index,
-            square_possibilities.chars().nth(i).unwrap(),
+            *square_possibilities.possibilities().iter().nth(i).unwrap(),
         ) {
             break;
         }
 
-        let mut successfully_assigned: String = String::from("");
-        for (square, _) in SQUARES.iter().enumerate() {
-            let values_at_square = puzzle[square].clone();
-            if values_at_square.len() == 1 {
-                successfully_assigned.push_str(&values_at_square);
+        let mut successfully_assigned = vec![];
+        for square in 0..SQUARES.len() {
+            if puzzle[square].len() == 1 {
+                successfully_assigned.push(*puzzle[square].possibilities().iter().nth(0).unwrap());
             }
         }
 
-        let mut chars: Vec<char> = successfully_assigned.chars().collect();
-        chars.dedup();
-        let deduped: String = chars.iter().collect();
+        let mut digits = successfully_assigned.clone();
+        digits.dedup();
 
-        if successfully_assigned.len() >= PUZZLE_N && deduped.len() >= 8 {
+        if successfully_assigned.len() >= 17 && digits.len() >= 8 {
             return format_grid(&puzzle);
         }
     }
