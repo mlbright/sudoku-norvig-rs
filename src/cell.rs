@@ -3,21 +3,21 @@ use smallbitvec::SmallBitVec;
 #[derive(Clone, Debug)]
 pub struct Cell {
     bit_vector: SmallBitVec,
+    length: usize,
 }
 
 impl Cell {
     pub fn len(&self) -> usize {
-        self.bit_vector
-            .iter()
-            .filter(|b| *b)
-            .collect::<Vec<bool>>()
-            .len()
+        self.length
     }
 
     pub fn new() -> Self {
-        Cell {
+        let mut c = Cell {
             bit_vector: sbvec![true; 9],
-        }
+            length: 0,
+        };
+        c.length = c.bit_vector.len();
+        c
     }
 
     pub fn to_string(&self) -> String {
@@ -44,6 +44,7 @@ impl Cell {
 
     pub fn remove(&mut self, position: usize) {
         self.bit_vector.set(position, false);
+        self.length -= 1;
     }
 
     pub fn set(&mut self, position: usize) {
