@@ -53,7 +53,7 @@ lazy_static! {
 
         unitlist
     };
-    static ref UNITLIST: std::vec::Vec<Vec<usize>> = {
+    static ref UNITLIST: Vec<Vec<usize>> = {
         let mut unitlist: Vec<Vec<usize>> = vec![];
         for unit in IUNITLIST.iter() {
             let mut u: Vec<usize> = vec![];
@@ -260,7 +260,7 @@ fn from_file(filename: impl AsRef<Path>) -> Vec<String> {
 
 fn solve_all(grids: &Vec<String>, name: &str) {
     let n = grids.len();
-    let mut times: Vec<std::time::Duration> = vec![];
+    let mut times: Vec<Duration> = vec![];
 
     for grid in grids.iter() {
         if let Some(t) = time_solve(grid) {
@@ -288,7 +288,7 @@ fn solve_all(grids: &Vec<String>, name: &str) {
     );
 }
 
-fn time_solve(grid: &str) -> Option<std::time::Duration> {
+fn time_solve(grid: &str) -> Option<Duration> {
     let start = Instant::now();
     if let Some(_) = solve(grid) {
         let duration = start.elapsed();
