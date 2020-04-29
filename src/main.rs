@@ -174,8 +174,9 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
     if puzzle[square].len() == 1 {
+        let last_value = puzzle[square].first();
         for peer in PEERS[square].iter() {
-            if !eliminate(puzzle, *peer, puzzle[square].first()) {
+            if !eliminate(puzzle, *peer, last_value) {
                 return false;
             }
         }
