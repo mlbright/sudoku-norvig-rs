@@ -20,22 +20,12 @@ impl Cell {
         c
     }
 
-    pub fn to_string(&self) -> String {
-        let mut s = String::new();
-        for (i, b) in self.bit_vector.iter().enumerate() {
-            if b {
-                s.push_str(&i.to_string())
-            }
-        }
-        s
-    }
-
     pub fn possibilities(&self) -> Vec<usize> {
         self.bit_vector
             .iter()
             .enumerate()
             .filter(|(_i, b)| *b)
-            .map(|(i,_b)| i)
+            .map(|(i, _b)| i)
             .collect::<Vec<usize>>()
     }
 
@@ -44,17 +34,17 @@ impl Cell {
             .iter()
             .enumerate()
             .filter(|(i, b)| *b && *i != exception)
-            .map(|(i,_b)| i)
+            .map(|(i, _b)| i)
             .collect::<Vec<usize>>()
     }
 
-    pub fn first(&self) -> usize {
+    pub fn first(&self) -> Option<usize> {
         for (i, b) in self.bit_vector.iter().enumerate() {
             if b {
-                return i;
+                return Some(i);
             }
         }
-        return 10;
+        None
     }
 
     pub fn contains(&self, position: usize) -> bool {

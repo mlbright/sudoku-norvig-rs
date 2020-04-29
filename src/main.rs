@@ -129,10 +129,11 @@ fn main() {
 }
 
 fn format_grid(solution: &Vec<Cell>) -> String {
-    let mut show: String = "".to_string();
+    let mut show = String::new();
     for i in 0..SQUARES.len() {
         if solution[i].len() == 1 {
-            show.push_str(&solution[i].to_string());
+            let v = &solution[i].first().unwrap() + 1;
+            show.push_str(&v.to_string());
         } else {
             show.push('.');
         }
@@ -174,7 +175,7 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
 
     // (1) If a square s is reduced to one value, then eliminate it from its peers.
     if puzzle[square].len() == 1 {
-        let last_value = puzzle[square].first();
+        let last_value = puzzle[square].first().unwrap();
         for peer in PEERS[square].iter() {
             if !eliminate(puzzle, *peer, last_value) {
                 return false;
@@ -320,7 +321,7 @@ fn random_puzzle() -> String {
         let mut successfully_assigned = vec![];
         for square in 0..SQUARES.len() {
             if puzzle[square].len() == 1 {
-                successfully_assigned.push(puzzle[square].first());
+                successfully_assigned.push(puzzle[square].first().unwrap());
             }
         }
 
