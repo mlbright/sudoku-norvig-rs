@@ -20,16 +20,6 @@ impl Cell {
         c
     }
 
-    pub fn to_string(&self) -> String {
-        let mut s = String::new();
-        for (i, b) in self.bit_vector.iter().enumerate() {
-            if b {
-                s.push_str(&i.to_string())
-            }
-        }
-        s
-    }
-
     pub fn possibilities(&self) -> Vec<usize> {
         self.bit_vector
             .iter()

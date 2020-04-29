@@ -129,10 +129,11 @@ fn main() {
 }
 
 fn format_grid(solution: &Vec<Cell>) -> String {
-    let mut show: String = "".to_string();
+    let mut show = String::new();
     for i in 0..SQUARES.len() {
         if solution[i].len() == 1 {
-            show.push_str(&solution[i].to_string());
+            let v = &solution[i].first() + 1;
+            show.push_str(&v.to_string());
         } else {
             show.push('.');
         }
