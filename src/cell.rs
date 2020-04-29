@@ -42,7 +42,8 @@ impl Cell {
         self.bit_vector
             .iter()
             .enumerate()
-            .filter_map(|(i, b)| if b && i != exception { Some(i) } else { None })
+            .filter(|(i, b)| *b && *i != exception)
+            .map(|(i,_b)| i)
             .collect::<Vec<usize>>()
     }
 
