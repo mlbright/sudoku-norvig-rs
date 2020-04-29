@@ -34,7 +34,8 @@ impl Cell {
         self.bit_vector
             .iter()
             .enumerate()
-            .filter_map(|(i, b)| if b { Some(i) } else { None })
+            .filter(|(_i, b)| *b)
+            .map(|(i,_b)| i)
             .collect::<Vec<usize>>()
     }
 
