@@ -12,12 +12,10 @@ impl Cell {
     }
 
     pub fn new() -> Self {
-        let mut c = Cell {
+        Cell {
             bit_vector: sbvec![true; 9],
-            length: 0,
-        };
-        c.length = c.bit_vector.len();
-        c
+            length: 9,
+        }
     }
 
     pub fn possibilities(&self) -> Vec<usize> {
@@ -33,8 +31,9 @@ impl Cell {
         self.bit_vector
             .iter()
             .enumerate()
-            .filter(|(i, b)| *b && *i != exception)
+            .filter(|(_i, b)| *b)
             .map(|(i, _b)| i)
+            .filter(|i| *i != exception)
             .collect::<Vec<usize>>()
     }
 
