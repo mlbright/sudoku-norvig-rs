@@ -20,21 +20,22 @@ On my MacBook Pro, I get:
 ```
 ➜  sudoku-norvig-rs git:(master) python sudoku.py
 All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0037 secs (268.09 Hz), max 0.0062 secs).
-Solved 95 of 95 hard puzzles (avg 0.0129 secs (77.67 Hz), max 0.0626 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0049 secs (202.31 Hz), max 0.0074 secs).
-Solved 99 of 99 random puzzles (avg 0.0038 secs (259.94 Hz), max 0.0064 secs).
-➜  sudoku-norvig-rs git:(master) go run sugoku.go
+Solved 50 of 50 easy puzzles (avg 0.0036 secs (281.22 Hz), max 0.0054 secs).
+Solved 95 of 95 hard puzzles (avg 0.0119 secs (84.38 Hz), max 0.0567 secs).
+Solved 11 of 11 hardest puzzles (avg 0.0048 secs (208.86 Hz), max 0.0066 secs).
+Solved 99 of 99 random puzzles (avg 0.0035 secs (285.29 Hz), max 0.0045 secs).
+➜  sudoku-norvig-rs git:(master) ./sugoku
 All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0007 secs (1456.49 Hz), max 0.0012 secs).
-Solved 95 of 95 hard puzzles (avg 0.0020 secs (495.40 Hz), max 0.0095 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0008 secs (1315.79 Hz), max 0.0010 secs).
-Solved 99 of 99 random puzzles (avg 0.0006 secs (1543.43 Hz), max 0.0015 secs).
+Solved 50 of 50 easy puzzles (avg 0.0007 secs (1428.20 Hz), max 0.0015 secs).
+Solved 95 of 95 hard puzzles (avg 0.0020 secs (498.01 Hz), max 0.0094 secs).
+Solved 11 of 11 hardest puzzles (avg 0.0008 secs (1277.44 Hz), max 0.0014 secs).
+Solved 99 of 99 random puzzles (avg 0.0006 secs (1599.51 Hz), max 0.0012 secs).
 ➜  sudoku-norvig-rs git:(master) ./target/release/sudoku-norvig-rs
-Solved 50 of 50 easy puzzles (avg. 0.0008 secs (1232.91 Hz), max 0.0013 secs).
-Solved 95 of 95 hard puzzles (avg. 0.0021 secs (483.56 Hz), max 0.0094 secs).
-Solved 11 of 11 hardest puzzles (avg. 0.0009 secs (1053.19 Hz), max 0.0016 secs).
-Solved 99 of 99 random puzzles (avg. 0.0008 secs (1195.16 Hz), max 0.0014 secs).
+All tests pass.
+Solved 50 of 50 easy puzzles (avg. 0.0003 secs (3696.57 Hz), max 0.0004 secs).
+Solved 95 of 95 hard puzzles (avg. 0.0008 secs (1231.66 Hz), max 0.0041 secs).
+Solved 11 of 11 hardest puzzles (avg. 0.0003 secs (3151.02 Hz), max 0.0006 secs).
+Solved 99 of 99 random puzzles (avg. 0.0003 secs (3717.31 Hz), max 0.0004 secs).
 ➜  sudoku-norvig-rs git:(master)
 ```
 
@@ -45,26 +46,26 @@ On a Ubuntu 16.04.6 LTS machine, I get:
 ```
 administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ python sudoku.py
 All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0048 secs (209.05 Hz), max 0.0060 secs).
-Solved 95 of 95 hard puzzles (avg 0.0175 secs (57.16 Hz), max 0.0843 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0063 secs (158.94 Hz), max 0.0092 secs).
-Solved 99 of 99 random puzzles (avg 0.0052 secs (193.25 Hz), max 0.0070 secs).
+Solved 50 of 50 easy puzzles (avg 0.0049 secs (202.62 Hz), max 0.0060 secs).
+Solved 95 of 95 hard puzzles (avg 0.0176 secs (56.82 Hz), max 0.0892 secs).
+Solved 11 of 11 hardest puzzles (avg 0.0062 secs (160.76 Hz), max 0.0090 secs).
+Solved 98 of 99 random puzzles (avg 0.0051 secs (194.32 Hz), max 0.0061 secs).
 administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ ./sugoku
 All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0010 secs (1035.13 Hz), max 0.0019 secs).
-Solved 95 of 95 hard puzzles (avg 0.0029 secs (349.68 Hz), max 0.0126 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0012 secs (847.98 Hz), max 0.0021 secs).
-Solved 99 of 99 random puzzles (avg 0.0009 secs (1145.66 Hz), max 0.0014 secs).
+Solved 50 of 50 easy puzzles (avg 0.0009 secs (1072.89 Hz), max 0.0018 secs).
+Solved 95 of 95 hard puzzles (avg 0.0028 secs (355.93 Hz), max 0.0130 secs).
+Solved 11 of 11 hardest puzzles (avg 0.0011 secs (934.15 Hz), max 0.0014 secs).
+Solved 99 of 99 random puzzles (avg 0.0009 secs (1109.33 Hz), max 0.0033 secs).
 administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ ./target/release/sudoku-norvig-rs
-Solved 50 of 50 easy puzzles (avg. 0.0005 secs (2073.90 Hz), max 0.0010 secs).
-Solved 95 of 95 hard puzzles (avg. 0.0013 secs (791.31 Hz), max 0.0059 secs).
-Solved 11 of 11 hardest puzzles (avg. 0.0005 secs (1855.73 Hz), max 0.0007 secs).
-Solved 99 of 99 random puzzles (avg. 0.0005 secs (2152.64 Hz), max 0.0005 secs).
+All tests pass.
+Solved 50 of 50 easy puzzles (avg. 0.0003 secs (3186.91 Hz), max 0.0006 secs).
+Solved 95 of 95 hard puzzles (avg. 0.0010 secs (1025.89 Hz), max 0.0046 secs).
+Solved 11 of 11 hardest puzzles (avg. 0.0004 secs (2434.00 Hz), max 0.0006 secs).
+Solved 99 of 99 random puzzles (avg. 0.0004 secs (2411.12 Hz), max 0.0022 secs).
 administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$
 ```
 
-Why is Rust so much slower on MacOS than on Linux? And why is Golang so fast on MacOS? **If you know, please file an issue.**
-
+**Note: the Rust version uses much more efficient data structures.**
 
 [original]: http://norvig.com/sudoku.html
 [rustup]: https://www.rust-lang.org/tools/install
