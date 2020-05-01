@@ -31,7 +31,6 @@ lazy_static! {
         }
         isquares
     };
-    static ref BLANK_PUZZLE: Vec<Cell> = { vec![Cell::new(); 81] };
     static ref IUNITLIST: Vec<Vec<String>> = {
         let mut unitlist: Vec<Vec<String>> = vec![];
 
@@ -100,6 +99,7 @@ lazy_static! {
         }
         peers
     };
+    static ref BLANK_PUZZLE: [Cell;81] = { arr![Cell::new(); 81] };
 }
 
 fn test() {
@@ -129,7 +129,7 @@ fn main() {
     solve_all(&random_puzzles, "random");
 }
 
-fn format_grid(solution: &Vec<Cell>) -> String {
+fn format_grid(solution: &[Cell]) -> String {
     let mut show = String::new();
     for i in 0..SQUARES.len() {
         if solution[i].len() == 1 {
@@ -142,7 +142,7 @@ fn format_grid(solution: &Vec<Cell>) -> String {
     show
 }
 
-fn parse_grid(grid: &str) -> Option<Vec<Cell>> {
+fn parse_grid(grid: &str) -> Option<[Cell;81]> {
     // To start, every square can be any digit; then assign values from the grid.
     let mut solution = BLANK_PUZZLE.clone();
     for (i, c) in grid.chars().enumerate() {
@@ -206,14 +206,14 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
     true
 }
 
-fn solve(grid: &str) -> Option<Vec<Cell>> {
+fn solve(grid: &str) -> Option<[Cell;81]> {
     match parse_grid(grid) {
         None => None,
         Some(puzzle) => search(Some(puzzle)),
     }
 }
 
-fn search(p: Option<Vec<Cell>>) -> Option<Vec<Cell>> {
+fn search(p: Option<[Cell;81]>) -> Option<[Cell;81]> {
     match p {
         None => None,
         Some(puzzle) => {
@@ -225,6 +225,11 @@ fn search(p: Option<Vec<Cell>>) -> Option<Vec<Cell>> {
                 if size > 1 && size < min_size {
                     min_square = i;
                     min_size = size;
+                    /*
+                    if size == 2 {
+                        break;
+                    }
+                    */
                 }
             }
 
@@ -302,7 +307,7 @@ fn time_solve(grid: &str) -> Option<Duration> {
 
 fn random_puzzle() -> String {
     let mut rng = rand::thread_rng();
-    let mut puzzle: Vec<Cell> = BLANK_PUZZLE.clone();
+    let mut puzzle: [Cell;81] = BLANK_PUZZLE.clone();
     let mut random_squares = SQUARES.clone();
     random_squares.shuffle(&mut rng);
 
