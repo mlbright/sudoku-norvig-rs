@@ -17,6 +17,7 @@ use std::io::BufReader;
 use std::path::Path;
 use std::time::Duration;
 use std::time::Instant;
+use arr_macro::arr;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";

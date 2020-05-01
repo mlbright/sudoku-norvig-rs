@@ -31,8 +31,9 @@ impl Cell {
         self.bit_vector
             .iter()
             .enumerate()
-            .filter(|(i, b)| *b && *i != exception)
+            .filter(|(_i, b)| *b)
             .map(|(i, _b)| i)
+            .filter(|i| *i != exception)
             .collect::<Vec<usize>>()
     }
 
