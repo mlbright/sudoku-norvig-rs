@@ -225,11 +225,9 @@ fn search(p: Option<[Cell;81]>) -> Option<[Cell;81]> {
                 if size > 1 && size < min_size {
                     min_square = i;
                     min_size = size;
-                    /*
-                    if size == 2 {
+                    if min_size == 2 {
                         break;
                     }
-                    */
                 }
             }
 
