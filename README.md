@@ -63,6 +63,8 @@ Solved 99 of 99 random puzzles (avg. 0.0005 secs (2152.64 Hz), max 0.0005 secs).
 administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$
 ```
 
+Why is Rust so much slower on MacOS than on Linux? And why is Golang so fast on MacOS? **If you know, please file an issue.**
+
 
 [original]: http://norvig.com/sudoku.html
 [rustup]: https://www.rust-lang.org/tools/install
