@@ -107,6 +107,7 @@ fn test() {
     assert_eq!(ISQUARES.len(), 81);
     assert_eq!(IUNITLIST.len(), 27);
     assert_eq!(UNITLIST.len(), 27);
+    assert_eq!(UNITLIST[0].len(), 9);
 
     for (i, _) in SQUARES.iter().enumerate() {
         assert_eq!(UNITS[i].len(), 3);
@@ -115,6 +116,8 @@ fn test() {
     for (i, _) in SQUARES.iter().enumerate() {
         assert_eq!(PEERS[i].len(), 20);
     }
+
+    println!("All tests pass.");
 }
 
 fn main() {
@@ -186,12 +189,11 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
 
     // (2) If a unit u is reduced to only one place for a value d, then put it there.
     for unit in UNITS[square].iter() {
-        let mut spots: Vec<usize> = vec![];
-        for sq in unit {
-            if puzzle[*sq].contains(value_to_eliminate) {
-                spots.push(*sq);
-            }
-        }
+        let spots = unit
+            .iter()
+            .filter(|sq| puzzle[**sq].contains(value_to_eliminate))
+            .map(|sq| *sq)
+            .collect::<Vec<usize>>();
 
         if spots.len() == 0 {
             return false; // Contradiction
