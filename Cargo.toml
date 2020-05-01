@@ -12,3 +12,4 @@ lazy_static = "1.4.0"
 rand = "0.7.3"
 smallbitvec = "2.4"
 arr_macro = { git = "https://github.com/JoshMcguigan/arr_macro" }
+arrayvec = "0.5.1"
