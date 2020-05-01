@@ -7,6 +7,7 @@ extern crate smallbitvec;
 mod cell;
 use cell::Cell;
 
+use arr_macro::arr;
 use itertools::iproduct;
 use rand::seq::SliceRandom;
 use rand::Rng;
@@ -17,7 +18,6 @@ use std::io::BufReader;
 use std::path::Path;
 use std::time::Duration;
 use std::time::Instant;
-use arr_macro::arr;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";
@@ -99,7 +99,7 @@ lazy_static! {
         }
         peers
     };
-    static ref BLANK_PUZZLE: [Cell;81] = { arr![Cell::new(); 81] };
+    static ref BLANK_PUZZLE: [Cell; 81] = { arr![Cell::new(); 81] };
 }
 
 fn test() {
@@ -142,7 +142,7 @@ fn format_grid(solution: &[Cell]) -> String {
     show
 }
 
-fn parse_grid(grid: &str) -> Option<[Cell;81]> {
+fn parse_grid(grid: &str) -> Option<[Cell; 81]> {
     // To start, every square can be any digit; then assign values from the grid.
     let mut solution = BLANK_PUZZLE.clone();
     for (i, c) in grid.chars().enumerate() {
@@ -206,14 +206,14 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
     true
 }
 
-fn solve(grid: &str) -> Option<[Cell;81]> {
+fn solve(grid: &str) -> Option<[Cell; 81]> {
     match parse_grid(grid) {
         None => None,
         Some(puzzle) => search(Some(puzzle)),
     }
 }
 
-fn search(p: Option<[Cell;81]>) -> Option<[Cell;81]> {
+fn search(p: Option<[Cell; 81]>) -> Option<[Cell; 81]> {
     match p {
         None => None,
         Some(puzzle) => {
@@ -305,7 +305,7 @@ fn time_solve(grid: &str) -> Option<Duration> {
 
 fn random_puzzle() -> String {
     let mut rng = rand::thread_rng();
-    let mut puzzle: [Cell;81] = BLANK_PUZZLE.clone();
+    let mut puzzle: [Cell; 81] = BLANK_PUZZLE.clone();
     let mut random_squares = SQUARES.clone();
     random_squares.shuffle(&mut rng);
 
