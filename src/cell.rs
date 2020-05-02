@@ -1,4 +1,5 @@
 use smallbitvec::SmallBitVec;
+use arrayvec::ArrayVec;
 
 #[derive(Clone, Debug)]
 pub struct Cell {
@@ -18,23 +19,23 @@ impl Cell {
         }
     }
 
-    pub fn possibilities(&self) -> Vec<usize> {
+    pub fn possibilities(&self) -> ArrayVec<[usize;9]> {
         self.bit_vector
             .iter()
             .enumerate()
             .filter(|(_i, b)| *b)
             .map(|(i, _b)| i)
-            .collect::<Vec<usize>>()
+            .collect::<_>()
     }
 
-    pub fn possibilities_except(&self, exception: usize) -> Vec<usize> {
+    pub fn possibilities_except(&self, exception: usize) -> ArrayVec<[usize;9]> {
         self.bit_vector
             .iter()
             .enumerate()
             .filter(|(_i, b)| *b)
             .map(|(i, _b)| i)
             .filter(|i| *i != exception)
-            .collect::<Vec<usize>>()
+            .collect::<ArrayVec<[usize;9]>>()
     }
 
     pub fn first(&self) -> Option<usize> {
@@ -72,7 +73,16 @@ mod tests {
     fn test_possibilities() {
         let mut c = Cell::new();
         c.remove(3);
-        assert_eq!(c.possibilities(), vec![0, 1, 2, 4, 5, 6, 7, 8]);
+        let mut array = ArrayVec::<[_; 9]>::new();
+        array.push(0);
+        array.push(1);
+        array.push(2);
+        array.push(4);
+        array.push(5);
+        array.push(6);
+        array.push(7);
+        array.push(8);
+        assert_eq!(c.possibilities(), array);
     }
 
     #[test]
