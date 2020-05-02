@@ -1,5 +1,5 @@
-use smallbitvec::SmallBitVec;
 use arrayvec::ArrayVec;
+use smallbitvec::SmallBitVec;
 
 #[derive(Clone, Debug)]
 pub struct Cell {
@@ -19,7 +19,7 @@ impl Cell {
         }
     }
 
-    pub fn possibilities(&self) -> ArrayVec<[usize;9]> {
+    pub fn possibilities(&self) -> ArrayVec<[usize; 9]> {
         self.bit_vector
             .iter()
             .enumerate()
@@ -28,14 +28,14 @@ impl Cell {
             .collect::<_>()
     }
 
-    pub fn possibilities_except(&self, exception: usize) -> ArrayVec<[usize;9]> {
+    pub fn possibilities_except(&self, exception: usize) -> ArrayVec<[usize; 9]> {
         self.bit_vector
             .iter()
             .enumerate()
             .filter(|(_i, b)| *b)
             .map(|(i, _b)| i)
             .filter(|i| *i != exception)
-            .collect::<ArrayVec<[usize;9]>>()
+            .collect::<ArrayVec<[usize; 9]>>()
     }
 
     pub fn first(&self) -> Option<usize> {

@@ -8,6 +8,7 @@ mod cell;
 use cell::Cell;
 
 use arr_macro::arr;
+use arrayvec::ArrayVec;
 use itertools::iproduct;
 use rand::seq::SliceRandom;
 use rand::Rng;
@@ -18,7 +19,6 @@ use std::io::BufReader;
 use std::path::Path;
 use std::time::Duration;
 use std::time::Instant;
-use arrayvec::ArrayVec;
 
 static DIGITS: &str = "123456789";
 static ROWS: &str = "ABCDEFGHI";
@@ -194,7 +194,7 @@ fn eliminate(puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> b
             .iter()
             .filter(|sq| puzzle[**sq].contains(value_to_eliminate))
             .map(|sq| *sq)
-            .collect::<ArrayVec<[usize;9]>>();
+            .collect::<ArrayVec<[usize; 9]>>();
 
         if spots.len() == 0 {
             return false; // Contradiction
