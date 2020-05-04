@@ -1,3 +1,8 @@
+extern crate jemallocator;
+
+#[global_allocator]
+static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
+
 #[macro_use]
 extern crate lazy_static;
 extern crate rand;
@@ -43,8 +48,10 @@ lazy_static! {
             unitlist.push(cross(&r.to_string(), DIGITS));
         }
 
-        let rs: ArrayVec<[String;3]> = ArrayVec::from(["ABC".to_string(), "DEF".to_string(), "GHI".to_string()]);
-        let cs: ArrayVec<[String;3]> = ArrayVec::from(["123".to_string(), "456".to_string(), "789".to_string()]);
+        let rs: ArrayVec<[String; 3]> =
+            ArrayVec::from(["ABC".to_string(), "DEF".to_string(), "GHI".to_string()]);
+        let cs: ArrayVec<[String; 3]> =
+            ArrayVec::from(["123".to_string(), "456".to_string(), "789".to_string()]);
 
         for r in rs.iter() {
             for c in cs.iter() {
