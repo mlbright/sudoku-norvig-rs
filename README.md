@@ -20,22 +20,22 @@ On my MacBook Pro, I get:
 ```
 ➜  sudoku-norvig-rs git:(master) python sudoku.py
 All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0036 secs (281.22 Hz), max 0.0054 secs).
-Solved 95 of 95 hard puzzles (avg 0.0119 secs (84.38 Hz), max 0.0567 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0048 secs (208.86 Hz), max 0.0066 secs).
-Solved 99 of 99 random puzzles (avg 0.0035 secs (285.29 Hz), max 0.0045 secs).
+Solved 50 of 50 easy puzzles (avg 0.0036 secs (274.81 Hz), max 0.0078 secs).
+Solved 95 of 95 hard puzzles (avg 0.0124 secs (80.50 Hz), max 0.0613 secs).
+Solved 11 of 11 hardest puzzles (avg 0.0049 secs (204.76 Hz), max 0.0074 secs).
+Solved 99 of 99 random puzzles (avg 0.0036 secs (278.38 Hz), max 0.0059 secs).
 ➜  sudoku-norvig-rs git:(master) ./sugoku
 All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0007 secs (1428.20 Hz), max 0.0015 secs).
-Solved 95 of 95 hard puzzles (avg 0.0020 secs (498.01 Hz), max 0.0094 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0008 secs (1277.44 Hz), max 0.0014 secs).
-Solved 99 of 99 random puzzles (avg 0.0006 secs (1599.51 Hz), max 0.0012 secs).
+Solved 50 of 50 easy puzzles (avg 0.0007 secs (1537.75 Hz), max 0.0011 secs).
+Solved 95 of 95 hard puzzles (avg 0.0020 secs (489.39 Hz), max 0.0095 secs).
+Solved 11 of 11 hardest puzzles (avg 0.0008 secs (1190.61 Hz), max 0.0012 secs).
+Solved 99 of 99 random puzzles (avg 0.0006 secs (1605.19 Hz), max 0.0012 secs).
 ➜  sudoku-norvig-rs git:(master) ./target/release/sudoku-norvig-rs
 All tests pass.
-Solved 50 of 50 easy puzzles (avg. 0.0003 secs (3696.57 Hz), max 0.0004 secs).
-Solved 95 of 95 hard puzzles (avg. 0.0008 secs (1231.66 Hz), max 0.0041 secs).
-Solved 11 of 11 hardest puzzles (avg. 0.0003 secs (3151.02 Hz), max 0.0006 secs).
-Solved 99 of 99 random puzzles (avg. 0.0003 secs (3717.31 Hz), max 0.0004 secs).
+Solved 50 of 50 easy puzzles (avg. 0.0002 secs (4334.25 Hz), max 0.0003 secs).
+Solved 95 of 95 hard puzzles (avg. 0.0008 secs (1330.86 Hz), max 0.0033 secs).
+Solved 11 of 11 hardest puzzles (avg. 0.0003 secs (3506.44 Hz), max 0.0004 secs).
+Solved 99 of 99 random puzzles (avg. 0.0002 secs (4114.50 Hz), max 0.0004 secs).
 ➜  sudoku-norvig-rs git:(master)
 ```
 
