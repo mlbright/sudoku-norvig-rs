@@ -107,7 +107,7 @@ lazy_static! {
         }
         peers
     };
-    static ref BLANK_PUZZLE: [Cell; 81] = { arr![Cell::new(); 81] };
+    static ref BLANK_PUZZLE: [Cell; 81] = arr![Cell::new(); 81];
 }
 
 fn test() {
