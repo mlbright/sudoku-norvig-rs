@@ -1,15 +1,12 @@
 [package]
-name = "sudoku-norvig-rs"
-version = "0.1.0"
+name = "sudoku"
+version = "0.2.0"
 authors = ["Martin-Louis Bright <martin.louis.bright@autodesk.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 itertools = "0.9.0"
-lazy_static = "1.4.0"
 rand = "0.7.3"
 smallbitvec = "2.4"
-arr_macro = { git = "https://github.com/JoshMcguigan/arr_macro" }
 arrayvec = "0.5.1"
+array-macro = "2.1.0"
