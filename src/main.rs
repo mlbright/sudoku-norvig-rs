@@ -1,8 +1,3 @@
-extern crate jemallocator;
-
-#[global_allocator]
-static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
-
 #[macro_use]
 extern crate lazy_static;
 extern crate rand;
