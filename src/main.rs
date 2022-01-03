@@ -128,11 +128,11 @@ fn main() {
     solve_all(&from_file("easy50.txt"), "easy");
     solve_all(&from_file("top95.txt"), "hard");
     solve_all(&from_file("hardest.txt"), "hardest");
-    // let mut random_puzzles: Vec<String> = vec![];
-    // for _ in 0..99 {
-    //     random_puzzles.push(random_puzzle());
-    // }
-    // solve_all(&random_puzzles, "random");
+    let mut random_puzzles: Vec<String> = vec![];
+    for _ in 0..99 {
+        random_puzzles.push(random_puzzle());
+    }
+    solve_all(&random_puzzles, "random");
 }
 
 fn format_grid(solution: &[Cell]) -> String {
@@ -303,7 +303,7 @@ fn time_solve(grid: &str) -> Option<Duration> {
     let start = Instant::now();
     if let Some(solution) = solve(grid) {
         let duration = start.elapsed();
-        println!("{}", format_grid(&solution));
+        // println!("{}", format_grid(&solution));
         return Some(duration);
     }
     None
