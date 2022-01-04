@@ -38,6 +38,16 @@ cargo run --release --example bench
 
 This will compile the library and run it against a set of [puzzles](/puzzles).
 
+## Library
+
+Use this code as a Rust library.
+It currently doesn't reside in [crates.io][cratesio], so you'll need to include it in your `Cargo.toml` file like:
+
+```toml
+[dependencies]
+sudoku = { git = "https://github.com/mlbright/sudoku-norvig-rs" }
+ ```
+
 ## Performance
 
 Run:
@@ -113,3 +123,4 @@ administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$
 [fastest-rust]: https://github.com/Emerentius/sudoku
 [ar]: https://github.com/ColinEberhardt/wasm-sudoku-solver
 [singaporepm]: https://en.wikipedia.org/wiki/Lee_Hsien_Loong
+[cratesio]: https://crates.io
