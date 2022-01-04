@@ -1,6 +1,31 @@
 # sudoku-norvig-rs
 
-This repository is a Rust version of [Peter Norvig's "Solve Every Sudoku Puzzle"][original].
+This repository contains a Rust version of [Peter Norvig's "Solve Every Sudoku Puzzle"][original].
+
+# The rabbit hole
+
+Sudoku was said to be a "denial of service attack on the brain" (apparently by [Ben Laurie][laurie], of Apache `httpd` fame).
+Writing a Sudoku solver is an even bigger denial of service attack on the brain.
+However, as a side effect of writing this library, I was able to learn some software development tricks in Rust, Go, and Python.
+
+I improved Peter Norvig's version slightly by using Python lists instead of dictionaries.
+This turns out not to complicate the code too much while improving performance.
+
+Then I turned to Go when it was my favorite language.
+This resulted in significantly better performance.
+
+Rust is more performant than Go, although on Macos this is only true when using the [jemalloc memory allocator][jemalloc].
+The current version does _not_ use the `jemalloc` allocator, to keep things simple.
+
+Making a fast Sudoku solver is more complicated than perhaps meets the eye.
+Much has been [written][attractivechaos], and there's a devoted gang of solver nerds that have cut their teeth on this problem, including [the current prime minister of Singapore][singaporepm].
+The fastest solver I could find was [tdoku][tdoku] by [t-dillon]. 
+His [writeup][math] is a very deep dive.
+
+The fastest Rust version I found was https://github.com/Emerentius/sudoku.
+My version is not nearly as fast because it sticks to Norvig's basic approach.
+
+The coolest Sudoku thing ever is the [augmented reality Sudoku solver][ar] that makes uses of the fast Rust solver by [Emerentius][emerentius].
 
 ## Run
 
@@ -8,10 +33,21 @@ Install Rust with [rustup][rustup], which installs `cargo`.
 Then run:
 
 ```
-cargo run --release
+cargo run --release --example bench
 ```
 
+This will compile the library and run it against a set of [puzzles](/puzzles).
+
 ## Performance
+
+Run:
+
+```bash
+python3 sudoku.py # For the Python benchmarks
+cargo run --release --example bench # For the Rust benchmarks
+```
+
+Below are old benchmarks, but the conclusions you can draw from them are probably still valid.
 
 ### MacOS
 
@@ -65,7 +101,15 @@ Solved 99 of 99 random puzzles (avg. 0.0003 secs (3198.06 Hz), max 0.0006 secs).
 administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$
 ```
 
-**Note: the Rust version uses much more efficient data structures.**
-
 [original]: http://norvig.com/sudoku.html
 [rustup]: https://www.rust-lang.org/tools/install
+[jemalloc]: https://github.com/gnzlbg/jemallocator
+[emerentius]: https://github.com/Emerentius
+[attractivechaos]: https://attractivechaos.wordpress.com/2011/06/19/an-incomplete-review-of-sudoku-solver-implementations/
+[laurie]: https://en.wikipedia.org/wiki/Ben_Laurie
+[math]: https://t-dillon.github.io/tdoku/
+[t-dillon]: https://github.com/t-dillon
+[tdoku]: https://github.com/t-dillon/tdoku
+[fastest-rust]: https://github.com/Emerentius/sudoku
+[ar]: https://github.com/ColinEberhardt/wasm-sudoku-solver
+[singaporepm]: https://en.wikipedia.org/wiki/Lee_Hsien_Loong
