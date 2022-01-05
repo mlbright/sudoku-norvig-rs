@@ -14,7 +14,7 @@ This turns out not to complicate the code too much while improving performance.
 Then I turned to Go when it was my favorite language.
 This resulted in significantly better performance.
 
-Rust is more performant than Go, although on Macos this is only true when using the [jemalloc memory allocator][jemalloc].
+Rust is more performant than Go, although on MacOS this is only true when using the [jemalloc memory allocator][jemalloc].
 The current version does _not_ use the `jemalloc` allocator, to keep things simple.
 
 Making a fast Sudoku solver is more complicated than perhaps meets the eye.
