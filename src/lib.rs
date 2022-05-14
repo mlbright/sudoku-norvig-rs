@@ -170,7 +170,8 @@ impl Sudoku {
         for unit in self.units[square].iter() {
             let spots = unit
                 .iter()
-                .filter(|sq| puzzle[**sq].contains(value_to_eliminate)).copied()
+                .filter(|sq| puzzle[**sq].contains(value_to_eliminate))
+                .copied()
                 .collect::<ArrayVec<[usize; 9]>>();
 
             if spots.is_empty() {
