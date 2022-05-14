@@ -28,7 +28,7 @@ fn from_file(filename: impl AsRef<Path>) -> Vec<String> {
         .collect()
 }
 
-fn solve_all(grids: &Vec<String>, name: &str) {
+fn solve_all(grids: &[String], name: &str) {
     let n = grids.len();
     let mut times: Vec<Duration> = vec![];
 
@@ -41,7 +41,7 @@ fn solve_all(grids: &Vec<String>, name: &str) {
     let mut sum = Duration::new(0, 0);
     let mut max = Duration::new(0, 0);
     for duration in times.iter() {
-        sum = sum + *duration;
+        sum += *duration;
         if duration > &max {
             max = *duration;
         }
@@ -63,7 +63,6 @@ fn time_solve(grid: &str) -> Option<Duration> {
     let start = Instant::now();
     if let Some(_solution) = solver.solve(grid) {
         let duration = start.elapsed();
-        // println!("{}", format_grid(&solution));
         return Some(duration);
     }
     None

@@ -7,6 +7,12 @@ pub struct Cell {
     length: usize,
 }
 
+impl Default for Cell {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Cell {
     pub fn len(&self) -> usize {
         self.length
@@ -65,8 +71,8 @@ mod tests {
     fn test_contains() {
         let mut c = Cell::new();
         c.remove(4);
-        assert_eq!(true, c.contains(8));
-        assert_eq!(false, c.contains(4));
+        assert!(c.contains(8));
+        assert!(c.contains(4));
     }
 
     #[test]

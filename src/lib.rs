@@ -23,6 +23,12 @@ pub struct Sudoku {
     unitlist: Vec<Vec<usize>>,
 }
 
+impl Default for Sudoku {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Sudoku {
     pub fn new() -> Self {
         let squares: Vec<String> = cross(ROWS, DIGITS);
@@ -86,18 +92,18 @@ impl Sudoku {
                     }
                 }
             }
-            peer_set.sort();
+            peer_set.sort_unstable();
             peer_set.dedup();
             peers.push(peer_set);
         }
 
         Sudoku {
-            peers: peers,
-            units: units,
-            isquares: isquares,
-            squares: squares,
-            iunitlist: iunitlist,
-            unitlist: unitlist,
+            peers,
+            units,
+            isquares,
+            squares,
+            iunitlist,
+            unitlist,
         }
     }
 
@@ -107,9 +113,9 @@ impl Sudoku {
 
     pub fn format_grid(&self, solution: &[Cell]) -> String {
         let mut show = String::new();
-        for i in 0..81 {
-            if solution[i].len() == 1 {
-                let v = &solution[i].first().unwrap() + 1;
+        for item in solution.iter().take(81) {
+            if item.len() == 1 {
+                let v = &item.first().unwrap() + 1;
                 show.push_str(&v.to_string());
             } else {
                 show.push('.');
@@ -164,18 +170,15 @@ impl Sudoku {
         for unit in self.units[square].iter() {
             let spots = unit
                 .iter()
-                .filter(|sq| puzzle[**sq].contains(value_to_eliminate))
-                .map(|sq| *sq)
+                .filter(|sq| puzzle[**sq].contains(value_to_eliminate)).copied()
                 .collect::<ArrayVec<[usize; 9]>>();
 
-            if spots.len() == 0 {
+            if spots.is_empty() {
                 return false; // Contradiction
             }
 
-            if spots.len() == 1 {
-                if !self.assign(puzzle, spots[0], value_to_eliminate) {
-                    return false;
-                }
+            if spots.len() == 1 && !self.assign(puzzle, spots[0], value_to_eliminate) {
+                return false;
             }
         }
         true
@@ -243,9 +246,9 @@ impl Sudoku {
             }
 
             let mut successfully_assigned = vec![];
-            for square in 0..self.squares.len() {
-                if puzzle[square].len() == 1 {
-                    successfully_assigned.push(puzzle[square].first().unwrap());
+            for item in puzzle.iter().take(self.squares.len()) {
+                if item.len() == 1 {
+                    successfully_assigned.push(item.first().unwrap());
                 }
             }
 
@@ -257,7 +260,7 @@ impl Sudoku {
             }
         }
 
-        return self.random_puzzle();
+        self.random_puzzle()
     }
 }
 
