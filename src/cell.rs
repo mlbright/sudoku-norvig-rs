@@ -72,7 +72,7 @@ mod tests {
         let mut c = Cell::new();
         c.remove(4);
         assert!(c.contains(8));
-        assert!(c.contains(4));
+        assert!(!c.contains(4));
     }
 
     #[test]
