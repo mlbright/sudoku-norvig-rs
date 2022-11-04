@@ -37,7 +37,7 @@ impl Cell {
     }
 
     pub fn contains(&self, position: usize) -> bool {
-        let mask = 1<<position;
+        let mask = 1 << position;
         self.0 & mask != 0
     }
 

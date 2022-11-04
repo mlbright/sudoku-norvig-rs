@@ -50,7 +50,7 @@ fn solve_all(grids: &[String], name: &str) {
     }
 
     println!(
-        "Solved {} of {} {} puzzles (avg. {:.4} secs ({:.2} Hz), max {:.4} secs).",
+        "Solved {} of {} {} puzzles (avg. {:.8} secs ({:.4} Hz), max {:.8} secs).",
         times.len(),
         n,
         name,
