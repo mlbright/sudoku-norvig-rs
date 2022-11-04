@@ -112,7 +112,7 @@ impl Sudoku {
         let mut show = String::new();
         for item in solution.iter().take(81) {
             if item.len() == 1 {
-                let v = &item.first().unwrap();
+                let v = &item.first();
                 show.push_str(&v.to_string());
             } else {
                 show.push('.');
@@ -136,11 +136,15 @@ impl Sudoku {
     }
 
     fn assign(&self, puzzle: &mut [Cell], square: usize, value_to_assign: usize) -> bool {
-        puzzle[square]
-            .possibilities()
-            .iter()
-            .filter(|x| **x != value_to_assign)
-            .all(|c| self.eliminate(puzzle, square, *c))
+        for d in 1..=9 {
+            if d != value_to_assign
+                && puzzle[square].contains(d)
+                && !self.eliminate(puzzle, square, d)
+            {
+                return false;
+            }
+        }
+        true
     }
 
     fn eliminate(&self, puzzle: &mut [Cell], square: usize, value_to_eliminate: usize) -> bool {
@@ -156,7 +160,7 @@ impl Sudoku {
 
         // (1) If a square s is reduced to one value, then eliminate it from its peers.
         if puzzle[square].len() == 1 {
-            let last_value = puzzle[square].first().unwrap();
+            let last_value = puzzle[square].first();
             for peer in self.peers[square].iter() {
                 if !self.eliminate(puzzle, *peer, last_value) {
                     return false;
@@ -212,11 +216,13 @@ impl Sudoku {
                     return Some(puzzle);
                 }
 
-                for value in puzzle[min_square].possibilities() {
-                    let mut puzzle_copy = puzzle.clone();
-                    if self.assign(&mut puzzle_copy, min_square, value) {
-                        if let Some(result) = self.search(Some(puzzle_copy)) {
-                            return Some(result);
+                for value in 1..=9 {
+                    if puzzle[min_square].contains(value) {
+                        let mut puzzle_copy = puzzle.clone();
+                        if self.assign(&mut puzzle_copy, min_square, value) {
+                            if let Some(result) = self.search(Some(puzzle_copy)) {
+                                return Some(result);
+                            }
                         }
                     }
                 }
@@ -234,20 +240,17 @@ impl Sudoku {
         for random_square in random_squares.iter() {
             let random_index = self.isquares.get(random_square).unwrap();
             let possible_values = puzzle[*random_index].clone();
-            let i = rng.gen_range(0, possible_values.len());
 
-            if !self.assign(
-                &mut puzzle,
-                *random_index,
-                *possible_values.possibilities().iter().nth(i).unwrap(),
-            ) {
-                break;
+            for d in 1..=9 {
+                if possible_values.contains(d) && !self.assign(&mut puzzle, *random_index, d) {
+                    break;
+                }
             }
 
             let mut successfully_assigned = vec![];
             for item in puzzle.iter().take(self.squares.len()) {
                 if item.len() == 1 {
-                    successfully_assigned.push(item.first().unwrap());
+                    successfully_assigned.push(item.first());
                 }
             }
 
