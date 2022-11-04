@@ -11,7 +11,7 @@ fn main() {
     for _ in 0..99 {
         random_puzzles.push(puzzle.random_puzzle());
     }
-    // solve_all(&random_puzzles, "random");
+    solve_all(&random_puzzles, "random");
     solve_all(&from_file("puzzles/easy50.txt"), "easy");
     solve_all(&from_file("puzzles/top95.txt"), "hard");
     solve_all(&from_file("puzzles/hardest.txt"), "hardest");
