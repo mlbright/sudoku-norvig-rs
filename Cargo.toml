@@ -1,6 +1,6 @@
 [package]
 name = "sudoku"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Martin-Louis Bright <martin.louis.bright@autodesk.com>"]
 edition = "2018"
 
