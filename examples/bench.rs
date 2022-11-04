@@ -65,7 +65,7 @@ fn time_solve(grid: &str) -> Option<Duration> {
     let start = Instant::now();
     if let Some(_solution) = solver.solve(grid) {
         let duration = start.elapsed();
-        //println!("{}",solver.format_grid(&_solution));
+        // println!("{}",solver.format_grid(&_solution));
         return Some(duration);
     }
     None

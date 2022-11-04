@@ -1,7 +1,7 @@
 [package]
 name = "sudoku"
-version = "0.3.1"
-authors = ["Martin-Louis Bright <martin.louis.bright@autodesk.com>"]
+version = "0.14.0"
+authors = ["Martin-Louis Bright <mlbright@gmail.com>"]
 edition = "2018"
 
 [dependencies]
@@ -9,3 +9,8 @@ itertools = "0.9.0"
 rand = "0.7.3"
 arrayvec = "0.7.2"
 array-macro = "2.1.5"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
