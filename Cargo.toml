@@ -1,12 +1,11 @@
 [package]
 name = "sudoku"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Martin-Louis Bright <martin.louis.bright@autodesk.com>"]
 edition = "2018"
 
 [dependencies]
 itertools = "0.9.0"
 rand = "0.7.3"
-smallbitvec = "2.4"
-arrayvec = "0.5.1"
-array-macro = "2.1.0"
+arrayvec = "0.7.2"
+array-macro = "2.1.5"

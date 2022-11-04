@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate smallbitvec;
-
 mod cell;
 use cell::Cell;
 
@@ -47,9 +44,9 @@ impl Sudoku {
             iunitlist.push(cross(&r.to_string(), DIGITS));
         }
 
-        let rs: ArrayVec<[String; 3]> =
+        let rs: ArrayVec<String, 3> =
             ArrayVec::from(["ABC".to_string(), "DEF".to_string(), "GHI".to_string()]);
-        let cs: ArrayVec<[String; 3]> =
+        let cs: ArrayVec<String, 3> =
             ArrayVec::from(["123".to_string(), "456".to_string(), "789".to_string()]);
 
         for r in rs.iter() {
@@ -130,7 +127,7 @@ impl Sudoku {
         for (i, c) in grid.chars().enumerate() {
             if c.is_ascii_digit() && c != '0' {
                 let d = c.to_digit(10).unwrap() as usize;
-                if !self.assign(&mut solution, i, d - 1) {
+                if !self.assign(&mut solution, i, d) {
                     return None;
                 }
             }
@@ -140,8 +137,9 @@ impl Sudoku {
 
     fn assign(&self, puzzle: &mut [Cell], square: usize, value_to_assign: usize) -> bool {
         puzzle[square]
-            .possibilities_except(value_to_assign)
+            .possibilities()
             .iter()
+            .filter(|x| **x != value_to_assign)
             .all(|c| self.eliminate(puzzle, square, *c))
     }
 
@@ -172,7 +170,7 @@ impl Sudoku {
                 .iter()
                 .filter(|sq| puzzle[**sq].contains(value_to_eliminate))
                 .copied()
-                .collect::<ArrayVec<[usize; 9]>>();
+                .collect::<ArrayVec<usize, 9>>();
 
             if spots.is_empty() {
                 return false; // Contradiction
