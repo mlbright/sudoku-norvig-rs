@@ -112,7 +112,7 @@ impl Sudoku {
         let mut show = String::new();
         for item in solution.iter().take(81) {
             if item.len() == 1 {
-                let v = &item.first().unwrap() + 1;
+                let v = &item.first().unwrap();
                 show.push_str(&v.to_string());
             } else {
                 show.push('.');
