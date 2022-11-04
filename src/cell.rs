@@ -1,11 +1,7 @@
 use arrayvec::ArrayVec;
-use smallbitvec::SmallBitVec;
 
 #[derive(Clone, Debug)]
-pub struct Cell {
-    bit_vector: SmallBitVec,
-    length: usize,
-}
+pub struct Cell(u16);
 
 impl Default for Cell {
     fn default() -> Self {
@@ -14,52 +10,39 @@ impl Default for Cell {
 }
 
 impl Cell {
-    pub fn len(&self) -> usize {
-        self.length
-    }
-
     pub fn new() -> Self {
-        Cell {
-            bit_vector: sbvec![true; 9],
-            length: 9,
+        Cell(0b0000_0011_1111_1110u16)
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.count_ones() as usize
+    }
+
+    pub fn possibilities(&self) -> ArrayVec<usize, 9> {
+        let mut indices = ArrayVec::<_, 9>::new();
+        let mut t = self.0;
+        while t > 0 {
+            let index = t.trailing_zeros();
+            indices.push(index as usize);
+            t &= !(1 << index);
         }
-    }
-
-    pub fn possibilities(&self) -> ArrayVec<[usize; 9]> {
-        self.bit_vector
-            .iter()
-            .enumerate()
-            .filter(|(_i, b)| *b)
-            .map(|(i, _b)| i)
-            .collect::<_>()
-    }
-
-    pub fn possibilities_except(&self, exception: usize) -> ArrayVec<[usize; 9]> {
-        self.bit_vector
-            .iter()
-            .enumerate()
-            .filter(|(_i, b)| *b)
-            .map(|(i, _b)| i)
-            .filter(|i| *i != exception)
-            .collect::<ArrayVec<[usize; 9]>>()
+        indices
     }
 
     pub fn first(&self) -> Option<usize> {
-        for (i, b) in self.bit_vector.iter().enumerate() {
-            if b {
-                return Some(i);
-            }
+        match self.possibilities().len() {
+            0 => None,
+            _ => Some(self.possibilities()[0]),
         }
-        None
     }
 
     pub fn contains(&self, position: usize) -> bool {
-        self.bit_vector[position]
+        let mask = 1<<position;
+        self.0 & mask != 0
     }
 
     pub fn remove(&mut self, position: usize) {
-        self.bit_vector.set(position, false);
-        self.length -= 1;
+        self.0 &= !(1 << position);
     }
 }
 
@@ -71,18 +54,21 @@ mod tests {
     fn test_contains() {
         let mut c = Cell::new();
         c.remove(4);
+        assert!(c.contains(1));
         assert!(c.contains(8));
         assert!(!c.contains(4));
+        c.remove(8);
+        assert!(!c.contains(8));
     }
 
     #[test]
     fn test_possibilities() {
         let mut c = Cell::new();
-        c.remove(3);
-        let mut array = ArrayVec::<[_; 9]>::new();
-        array.push(0);
+        c.remove(9);
+        let mut array = ArrayVec::<_, 9>::new();
         array.push(1);
         array.push(2);
+        array.push(3);
         array.push(4);
         array.push(5);
         array.push(6);

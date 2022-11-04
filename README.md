@@ -27,6 +27,10 @@ My version is not nearly as fast because it sticks to Norvig's basic approach.
 
 The coolest Sudoku thing ever is the [augmented reality Sudoku solver][ar] that makes uses of the fast Rust solver by [Emerentius][emerentius].
 
+Another really neat repo is [go-sudoku][go-sudoku] by Eli Bendersky.
+His code is much faster than the Norvig Python version, and was faster than this Rust version.
+Then I switched to using the same u16 representation as him to represent squares of the puzzle, and now my version is faster.
+
 ## Run
 
 Install Rust with [rustup][rustup], which installs `cargo`.
@@ -57,58 +61,19 @@ python3 sudoku.py # For the Python benchmarks
 cargo run --release --example bench # For the Rust benchmarks
 ```
 
-Below are old benchmarks, but the conclusions you can draw from them are probably still valid.
-
 ### MacOS
 
-On my MacBook Pro, I get:
+On my MacBook Air (Retina, 13-inch, 2020), I get:
 
 ```
-➜  sudoku-norvig-rs git:(master) python sudoku.py
-All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0036 secs (274.81 Hz), max 0.0078 secs).
-Solved 95 of 95 hard puzzles (avg 0.0124 secs (80.50 Hz), max 0.0613 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0049 secs (204.76 Hz), max 0.0074 secs).
-Solved 99 of 99 random puzzles (avg 0.0036 secs (278.38 Hz), max 0.0059 secs).
-➜  sudoku-norvig-rs git:(master) ./sugoku
-All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0007 secs (1537.75 Hz), max 0.0011 secs).
-Solved 95 of 95 hard puzzles (avg 0.0020 secs (489.39 Hz), max 0.0095 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0008 secs (1190.61 Hz), max 0.0012 secs).
-Solved 99 of 99 random puzzles (avg 0.0006 secs (1605.19 Hz), max 0.0012 secs).
-➜  sudoku-norvig-rs git:(master) ./target/release/sudoku-norvig-rs
-All tests pass.
-Solved 50 of 50 easy puzzles (avg. 0.0002 secs (4334.25 Hz), max 0.0003 secs).
-Solved 95 of 95 hard puzzles (avg. 0.0008 secs (1330.86 Hz), max 0.0033 secs).
-Solved 11 of 11 hardest puzzles (avg. 0.0003 secs (3506.44 Hz), max 0.0004 secs).
-Solved 99 of 99 random puzzles (avg. 0.0002 secs (4114.50 Hz), max 0.0004 secs).
-➜  sudoku-norvig-rs git:(master)
-```
-
-### Linux
-
-On a Ubuntu 16.04.6 LTS machine, I get:
-
-```
-administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ python sudoku.py
-All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0049 secs (202.34 Hz), max 0.0070 secs).
-Solved 95 of 95 hard puzzles (avg 0.0181 secs (55.25 Hz), max 0.0856 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0062 secs (161.54 Hz), max 0.0086 secs).
-Solved 99 of 99 random puzzles (avg 0.0054 secs (183.97 Hz), max 0.0104 secs).
-administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ ./sugoku
-All tests pass.
-Solved 50 of 50 easy puzzles (avg 0.0010 secs (1047.70 Hz), max 0.0018 secs).
-Solved 95 of 95 hard puzzles (avg 0.0031 secs (326.48 Hz), max 0.0145 secs).
-Solved 11 of 11 hardest puzzles (avg 0.0012 secs (841.74 Hz), max 0.0020 secs).
-Solved 99 of 99 random puzzles (avg 0.0010 secs (1015.00 Hz), max 0.0019 secs).
-administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$ ./target/release/sudoku-norvig-rs
-All tests pass.
-Solved 50 of 50 easy puzzles (avg. 0.0003 secs (3091.42 Hz), max 0.0005 secs).
-Solved 95 of 95 hard puzzles (avg. 0.0009 secs (1054.58 Hz), max 0.0044 secs).
-Solved 11 of 11 hardest puzzles (avg. 0.0005 secs (2185.45 Hz), max 0.0007 secs).
-Solved 99 of 99 random puzzles (avg. 0.0003 secs (3198.06 Hz), max 0.0006 secs).
-administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$
+Solved 50 of 50 easy puzzles (avg. 0.0001 secs (9985.05 Hz), max 0.0001 secs).
+Solved 95 of 95 hard puzzles (avg. 0.0003 secs (3208.50 Hz), max 0.0014 secs).
+Solved 11 of 11 hardest puzzles (avg. 0.0001 secs (7473.58 Hz), max 0.0002 secs).
+Solved 20 of 20 hardest20 puzzles (avg. 0.0010 secs (981.62 Hz), max 0.0035 secs).
+Solved 1000 of 1000 hardest20x50 puzzles (avg. 0.0009 secs (1052.67 Hz), max 0.0044 secs).
+Solved 87 of 87 topn87 puzzles (avg. 0.0005 secs (1889.87 Hz), max 0.0014 secs).
+Solved 1 of 1 most-difficult puzzles (avg. 1.0595 secs (0.94 Hz), max 1.0595 secs).
+Solved 1264 of 1264 combined puzzles (avg. 0.0016 secs (607.34 Hz), max 1.0449 secs).
 ```
 
 [original]: http://norvig.com/sudoku.html
@@ -124,3 +89,4 @@ administrator@ECS-4b01ba5b:~/sudoku-norvig-rs$
 [ar]: https://github.com/ColinEberhardt/wasm-sudoku-solver
 [singaporepm]: https://en.wikipedia.org/wiki/Lee_Hsien_Loong
 [cratesio]: https://crates.io
+[go-sudoku]: https://eli.thegreenplace.net/2022/sudoku-go-and-webassembly/
