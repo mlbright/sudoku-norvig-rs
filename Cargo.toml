@@ -14,3 +14,6 @@ array-macro = "2.1.5"
 lto = "fat"
 codegen-units = 1
 panic = "abort"
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+tikv-jemallocator = "0.5"
