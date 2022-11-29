@@ -5,13 +5,6 @@ use std::path::Path;
 use std::time::{Duration, Instant};
 use sudoku::Sudoku;
 
-#[cfg(not(target_env = "msvc"))]
-use tikv_jemallocator::Jemalloc;
-
-#[cfg(not(target_env = "msvc"))]
-#[global_allocator]
-static GLOBAL: Jemalloc = Jemalloc;
-
 fn main() {
     let mut random_puzzles: Vec<String> = vec![];
     let puzzle = Sudoku::new();
@@ -72,7 +65,7 @@ fn time_solve(grid: &str) -> Option<Duration> {
     let start = Instant::now();
     if let Some(_solution) = solver.solve(grid) {
         let duration = start.elapsed();
-        // println!("{}",solver.format_grid(&_solution));
+        // println!("{}", solver.format_grid(&_solution));
         return Some(duration);
     }
     None
