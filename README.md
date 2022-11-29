@@ -66,14 +66,14 @@ cargo run --release --example bench # For the Rust benchmarks
 On my MacBook Air (Retina, 13-inch, 2020), I get:
 
 ```
-Solved 50 of 50 easy puzzles (avg. 0.0001 secs (9985.05 Hz), max 0.0001 secs).
-Solved 95 of 95 hard puzzles (avg. 0.0003 secs (3208.50 Hz), max 0.0014 secs).
-Solved 11 of 11 hardest puzzles (avg. 0.0001 secs (7473.58 Hz), max 0.0002 secs).
-Solved 20 of 20 hardest20 puzzles (avg. 0.0010 secs (981.62 Hz), max 0.0035 secs).
-Solved 1000 of 1000 hardest20x50 puzzles (avg. 0.0009 secs (1052.67 Hz), max 0.0044 secs).
-Solved 87 of 87 topn87 puzzles (avg. 0.0005 secs (1889.87 Hz), max 0.0014 secs).
-Solved 1 of 1 most-difficult puzzles (avg. 1.0595 secs (0.94 Hz), max 1.0595 secs).
-Solved 1264 of 1264 combined puzzles (avg. 0.0016 secs (607.34 Hz), max 1.0449 secs).
+Solved 50 of 50 easy puzzles (avg. 0.00007972 secs (12543.9351 Hz), max 0.00015145 secs).
+Solved 95 of 95 hard puzzles (avg. 0.00035310 secs (2832.0641 Hz), max 0.00800655 secs).
+Solved 11 of 11 hardest puzzles (avg. 0.00006083 secs (16438.6428 Hz), max 0.00013210 secs).
+Solved 20 of 20 hardest20 puzzles (avg. 0.00074833 secs (1336.3037 Hz), max 0.00288490 secs).
+Solved 1000 of 1000 hardest20x50 puzzles (avg. 0.00074095 secs (1349.6268 Hz), max 0.00347086 secs).
+Solved 87 of 87 topn87 puzzles (avg. 0.00048929 secs (2043.7616 Hz), max 0.00257739 secs).
+Solved 1 of 1 most-difficult puzzles (avg. 0.55276984 secs (1.8091 Hz), max 0.55276984 secs).
+Solved 1264 of 1264 combined puzzles (avg. 0.00109279 secs (915.0886 Hz), max 0.55694445 secs).
 ```
 
 [original]: http://norvig.com/sudoku.html
