@@ -154,36 +154,45 @@ impl Sudoku {
 
         puzzle[square].remove(value_to_eliminate);
 
-        if puzzle[square].len() == 0 {
-            return false; // Contradiction, removed the last digit
-        }
-
-        // (1) If a square s is reduced to one value, then eliminate it from its peers.
-        if puzzle[square].len() == 1 {
-            let last_value = puzzle[square].first();
-            for peer in self.peers[square].iter() {
-                if !self.eliminate(puzzle, *peer, last_value) {
-                    return false;
+        match puzzle[square].len() {
+            0 => return false,
+            1 => {
+                // (1) If a square s is reduced to one value, then eliminate it from its peers.
+                if puzzle[square].len() == 1 {
+                    let last_value = puzzle[square].first();
+                    for peer in self.peers[square].iter() {
+                        if !self.eliminate(puzzle, *peer, last_value) {
+                            return false;
+                        }
+                    }
                 }
             }
+            _ => (),
         }
 
         // (2) If a unit u is reduced to only one place for a value d, then put it there.
-        for unit in self.units[square].iter() {
-            let spots = unit
-                .iter()
-                .filter(|sq| puzzle[**sq].contains(value_to_eliminate))
-                .copied()
-                .collect::<ArrayVec<usize, 9>>();
+        'outer: for unit in self.units[square].iter() {
+            let mut spot: Option<usize> = None;
 
-            if spots.is_empty() {
+            for sq in unit {
+                if puzzle[*sq].contains(value_to_eliminate) {
+                    if spot.is_none() {
+                        spot = Some(*sq);
+                    } else {
+                        break 'outer;
+                    }
+                }
+            }
+
+            if spot.is_none() {
                 return false; // Contradiction
             }
 
-            if spots.len() == 1 && !self.assign(puzzle, spots[0], value_to_eliminate) {
+            if !self.assign(puzzle, spot.unwrap(), value_to_eliminate) {
                 return false;
             }
         }
+
         true
     }
 
