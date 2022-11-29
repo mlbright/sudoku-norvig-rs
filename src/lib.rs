@@ -179,17 +179,23 @@ impl Sudoku {
                     if spot.is_none() {
                         spot = Some(*sq);
                     } else {
+                        // More than one square has 'value_to_eliminate' as a candidate, so we won't be
+                        // able to simplify things.
                         break 'outer;
                     }
                 }
             }
 
-            if spot.is_none() {
-                return false; // Contradiction
-            }
-
-            if !self.assign(puzzle, spot.unwrap(), value_to_eliminate) {
-                return false;
+            match spot {
+                None => {
+                    // Contradiction
+                    return false;
+                }
+                _ => {
+                    if !self.assign(puzzle, spot.unwrap(), value_to_eliminate) {
+                        return false;
+                    }
+                }
             }
         }
 
