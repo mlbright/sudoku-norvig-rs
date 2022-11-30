@@ -11,11 +11,11 @@ However, as a side effect of writing this library, I was able to learn some soft
 I improved Peter Norvig's version slightly by using Python lists instead of dictionaries.
 This turns out not to complicate the code too much while improving performance.
 
-Then I turned to Go when it was my favorite language.
-This resulted in significantly better performance.
-
-Rust is more performant than Go, although on MacOS this is only true when using the [jemalloc memory allocator][jemalloc].
-The current version does _not_ use the `jemalloc` allocator, to keep things simple.
+Then I turned to Go and it resulted in significantly better performance.
+Another really neat repo is [go-sudoku][go-sudoku] by Eli Bendersky.
+His code is much faster than the Norvig Python version, and was faster than this Rust version.
+Then I switched to using the same u16 representation as him to represent squares of the puzzle, and now my version is faster.
+(Rust is also more performant than Go, in general.)
 
 Making a fast Sudoku solver is more complicated than perhaps meets the eye.
 Much has been [written][attractivechaos], and there's a devoted gang of solver nerds that have cut their teeth on this problem, including [the current prime minister of Singapore][singaporepm].
@@ -26,10 +26,6 @@ The fastest Rust version I found was https://github.com/Emerentius/sudoku.
 My version is not nearly as fast because it sticks to Norvig's basic approach.
 
 The coolest Sudoku thing ever is the [augmented reality Sudoku solver][ar] that makes uses of the fast Rust solver by [Emerentius][emerentius].
-
-Another really neat repo is [go-sudoku][go-sudoku] by Eli Bendersky.
-His code is much faster than the Norvig Python version, and was faster than this Rust version.
-Then I switched to using the same u16 representation as him to represent squares of the puzzle, and now my version is faster.
 
 ## Run
 
