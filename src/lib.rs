@@ -170,7 +170,9 @@ impl Sudoku {
             _ => (),
         }
 
-        // (2) If a unit u is reduced to only one place for a value d, then put it there.
+        // (2) Since 'value_to_eliminate' was eliminated from square,
+        // we may find another position for it in one of square's units.
+        // If there is only one such place, assign 'value_to_eliminate' there.
         'outer: for unit in self.units[square].iter() {
             let mut spot: Option<usize> = None;
 
