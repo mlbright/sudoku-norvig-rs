@@ -155,15 +155,13 @@ impl Sudoku {
         puzzle[square].remove(value_to_eliminate);
 
         match puzzle[square].len() {
-            0 => return false,
+            0 => return false, // Contradiction
             1 => {
                 // (1) If a square s is reduced to one value, then eliminate it from its peers.
-                if puzzle[square].len() == 1 {
-                    let last_value = puzzle[square].first();
-                    for peer in self.peers[square].iter() {
-                        if !self.eliminate(puzzle, *peer, last_value) {
-                            return false;
-                        }
+                let last_value = puzzle[square].first();
+                for peer in self.peers[square].iter() {
+                    if !self.eliminate(puzzle, *peer, last_value) {
+                        return false;
                     }
                 }
             }
@@ -215,13 +213,13 @@ impl Sudoku {
         match p {
             None => None,
             Some(puzzle) => {
-                let mut min_square = 82;
+                let mut min_square: Option<usize> = None;
                 let mut min_size = 10;
 
                 for (i, square) in puzzle.iter().enumerate() {
                     let size = square.len();
                     if size > 1 && size < min_size {
-                        min_square = i;
+                        min_square = Some(i);
                         min_size = size;
                         if min_size == 2 {
                             break;
@@ -229,20 +227,22 @@ impl Sudoku {
                     }
                 }
 
-                if min_square == 82 {
-                    return Some(puzzle);
-                }
-
-                for value in 1..=9 {
-                    if puzzle[min_square].contains(value) {
-                        let mut puzzle_copy = puzzle.clone();
-                        if self.assign(&mut puzzle_copy, min_square, value) {
-                            if let Some(result) = self.search(Some(puzzle_copy)) {
-                                return Some(result);
+                match min_square {
+                    None => return Some(puzzle),
+                    Some(min_sq) => {
+                        for value in 1..=9 {
+                            if puzzle[min_sq].contains(value) {
+                                let mut puzzle_copy = puzzle.clone();
+                                if self.assign(&mut puzzle_copy, min_sq, value) {
+                                    if let Some(result) = self.search(Some(puzzle_copy)) {
+                                        return Some(result);
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
                 None
             }
         }
