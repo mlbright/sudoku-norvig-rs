@@ -198,7 +198,6 @@ def display(values):
         if r in [18, 45]:
             print(line)
     print()
-    print()
 
 
 ################ Search ################
@@ -262,7 +261,7 @@ def solve_all(grids, name="", showif=None):
             display(grid_values(grid))
             if values:
                 display(values)
-            print("(%.2f seconds)\n" % t)
+            print("(%.5f seconds)\n" % t)
         return (t, solved(values))
 
     times, results = zip(*[time_solve(grid) for grid in grids])
@@ -314,7 +313,7 @@ if __name__ == "__main__":
     test()
     solve_all([random_puzzle() for _ in range(99)], "random", 100.0)
     solve_all(from_file("puzzles/easy50.txt"), "easy", None)
-    solve_all(from_file("puzzles/top95.txt"), "hard", 0.0)
+    solve_all(from_file("puzzles/top95.txt"), "hard", 0.04)
     solve_all(from_file("puzzles/hardest.txt"), "hardest", None)
     solve_all(from_file("puzzles/hardest20.txt"), "hardest20", None)
     solve_all(from_file("puzzles/hardest20x50.txt"), "hardest20x50", None)
