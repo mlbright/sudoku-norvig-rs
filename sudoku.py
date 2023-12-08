@@ -186,17 +186,19 @@ def eliminate(values, s, d):
 
 def display(values):
     "Display these values as a 2-D grid."
-    width = 1 + max(len(values[s]) for s in squares)
+    width = 2 + max(len(values[s]) for s in values)
     line = "+".join(["-" * (width * 3)] * 3)
-    for r in rows:
+    for r in [0, 9, 18, 27, 36, 45, 54, 63, 72]:
         print(
             "".join(
-                values[r + c].center(width) + ("|" if c in "36" else "") for c in cols
+                values[c + r].center(width) + ("|" if c in [2, 5] else "")
+                for c in [0, 1, 2, 3, 4, 5, 6, 7, 8]
             )
         )
-        if r in "CF":
+        if r in [18, 45]:
             print(line)
-    print
+    print()
+    print()
 
 
 ################ Search ################
@@ -246,7 +248,7 @@ def shuffled(seq):
 import time, random
 
 
-def solve_all(grids, name="", showif=0.0):
+def solve_all(grids, name="", showif=None):
     """Attempt to solve a sequence of grids. Report results.
     When showif is a number of seconds, display puzzles that take longer.
     When showif is None, don't display any puzzles."""
@@ -312,7 +314,7 @@ if __name__ == "__main__":
     test()
     solve_all([random_puzzle() for _ in range(99)], "random", 100.0)
     solve_all(from_file("puzzles/easy50.txt"), "easy", None)
-    solve_all(from_file("puzzles/top95.txt"), "hard", None)
+    solve_all(from_file("puzzles/top95.txt"), "hard", 0.0)
     solve_all(from_file("puzzles/hardest.txt"), "hardest", None)
     solve_all(from_file("puzzles/hardest20.txt"), "hardest20", None)
     solve_all(from_file("puzzles/hardest20x50.txt"), "hardest20x50", None)
