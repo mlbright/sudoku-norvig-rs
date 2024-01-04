@@ -23,7 +23,7 @@ fn main() {
     solve_all(&from_file("puzzles/hardest20x50.txt"), "hardest20x50");
     solve_all(&from_file("puzzles/topn87.txt"), "topn87");
     solve_all(&from_file("puzzles/hardest-long.txt"), "most-difficult");
-    solve_all(&from_file("puzzles/all.txt"), "combined");
+    solve_all(&from_file("puzzles/all.txt"), "all");
 }
 
 fn from_file(filename: impl AsRef<Path>) -> Vec<String> {
